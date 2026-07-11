@@ -629,6 +629,7 @@
 
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item {
 	align-items: stretch;
+	--smm-stacked-image-max-height: 14rem;
 }
 
 /*
@@ -651,6 +652,11 @@
 	grid-template-columns: minmax(0, 1fr);
 }
 
+.wp-block-navigation__responsive-container.is-menu-open .smm-image-cta__media {
+	max-height: var(--smm-stacked-image-max-height, 14rem);
+	overflow: hidden;
+}
+
 /* Undo viewport absolute Image CTA fill when columns are stacked as rows. */
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-column--image_cta,
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta,
@@ -671,15 +677,32 @@
 	inset: auto;
 	width: 100%;
 	height: auto;
-	max-height: none;
+	max-height: var(--smm-stacked-image-max-height, 18rem);
 	object-fit: cover;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img {
+	aspect-ratio: 16 / 10;
+	max-height: none;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-square .smm-image-cta__img {
+	aspect-ratio: 1 / 1;
+	max-height: none;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-portrait .smm-image-cta__img {
+	aspect-ratio: 3 / 4;
+	max-height: var(--smm-stacked-image-max-height, 18rem);
 }
 
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media,
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
 	flex: 0 0 auto;
 	height: auto;
+	max-height: var(--smm-stacked-image-max-height, 18rem);
 	min-height: 0;
+	overflow: hidden;
 }
 
 /* Smaller devices: stack every column type into a single row each. */
@@ -714,6 +737,21 @@
 		overflow: visible;
 	}
 
+	/*
+	 * iPad mini / tablet portrait: keep Image CTA media at desktop-like
+	 * proportions instead of the full intrinsic upload height, which can
+	 * make the stacked panel taller than the viewport and unscrollable.
+	 */
+	.smm-image-cta__media {
+		max-height: var(--smm-stacked-image-max-height, 18rem);
+		overflow: hidden;
+	}
+
+	.smm-image-cta__img,
+	.smm-aspect-landscape .smm-image-cta__img,
+	.smm-aspect-square .smm-image-cta__img,
+	.smm-aspect-portrait .smm-image-cta__img,
+	.smm-aspect-original .smm-image-cta__img,
 	.smm-menu-item.smm-panel-width-viewport .smm-image-cta__img,
 	.smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img,
 	.smm-menu-item.smm-panel-width-viewport .smm-aspect-square .smm-image-cta__img,
@@ -723,15 +761,54 @@
 		inset: auto;
 		width: 100%;
 		height: auto;
-		max-height: none;
+		max-width: 100%;
+		max-height: var(--smm-stacked-image-max-height, 18rem);
 		object-fit: cover;
+	}
+
+	.smm-aspect-landscape .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img {
+		aspect-ratio: 16 / 10;
+		max-height: none;
+	}
+
+	.smm-aspect-square .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-square .smm-image-cta__img {
+		aspect-ratio: 1 / 1;
+		max-height: none;
+	}
+
+	.smm-aspect-portrait .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-portrait .smm-image-cta__img {
+		aspect-ratio: 3 / 4;
+		max-height: var(--smm-stacked-image-max-height, 18rem);
 	}
 
 	.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media,
 	.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
 		flex: 0 0 auto;
 		height: auto;
+		max-height: var(--smm-stacked-image-max-height, 18rem);
 		min-height: 0;
+	}
+}
+
+/*
+ * Tablet mini band (e.g. iPad mini portrait ~744–768px): slightly taller
+ * media budget than phones, still capped so the stacked panel remains scrollable.
+ */
+@media (min-width: 601px) and (max-width: 781px) {
+
+	.smm-menu-item {
+		--smm-stacked-image-max-height: 14rem;
+	}
+
+	.smm-aspect-landscape .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img {
+		/* Match desktop landscape proportion at stacked full width, hard-capped. */
+		aspect-ratio: 16 / 10;
+		max-height: var(--smm-stacked-image-max-height, 14rem);
+		object-fit: cover;
 	}
 }
 
