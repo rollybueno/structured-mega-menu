@@ -39,14 +39,14 @@
 	cursor: pointer;
 }
 
-.smm-column a {
+.smm-column a:not(.smm-column__cta) {
 	color: inherit;
 }
 
 .smm-menu-item__toggle:focus-visible,
 .smm-menu-item__link:focus-visible,
 .smm-menu-item__toggle--adjacent:focus-visible,
-.smm-column a:focus-visible {
+.smm-column a:not(.smm-column__cta):focus-visible {
 	outline: 2px solid currentcolor;
 	outline-offset: 2px;
 }
@@ -292,23 +292,28 @@
 	margin-block-start: 0.75rem;
 }
 
+a.smm-column__cta.smm-column__cta--button,
 .smm-column__cta--button {
 	box-sizing: border-box;
 	padding: 0.55em 1.1em;
-	border-radius: var(--smm-cta-radius, var(--wp--preset--spacing--20, 0.25rem));
+	border-radius: var(--smm-cta-radius, 0.25rem);
 	font-weight: 600;
 	font-size: 0.9em;
 	line-height: 1.25;
 	text-decoration: none !important;
 	text-align: center;
-	color: var(--smm-cta-color, var(--wp--preset--color--base, #fff));
-	background: var(--smm-cta-bg, var(--wp--preset--color--contrast, #1e1e1e));
+	/* Explicit light-on-dark so theme link/button styles cannot collapse contrast. */
+	color: var(--smm-cta-color, #fff);
+	background-color: var(--smm-cta-bg, var(--wp--preset--color--contrast, #111));
 	border: 1px solid transparent;
 	cursor: pointer;
 }
 
+a.smm-column__cta.smm-column__cta--button:hover,
+a.smm-column__cta.smm-column__cta--button:focus-visible,
 a.smm-column__cta--button:hover,
 a.smm-column__cta--button:focus-visible {
+	color: var(--smm-cta-color, #fff);
 	text-decoration: none !important;
 	filter: brightness(1.08);
 }
