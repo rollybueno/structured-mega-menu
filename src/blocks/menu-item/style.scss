@@ -279,7 +279,7 @@
 
 .smm-menu-item__grid {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr);
+	grid-template-columns: var(--smm-grid-template, minmax(0, 1fr));
 	gap: var(--smm-grid-gap, clamp(1rem, 2.4vw, 1.75rem));
 	min-width: 0;
 	width: 100%;
@@ -601,20 +601,141 @@
 	border: 1px solid var(--smm-panel-border, color-mix(in srgb, currentcolor 16%, transparent));
 }
 
-/* Responsive: intermediate widths — override inline template */
+/*
+ * Right/end-justified overlays shrink the flex column to the trigger label
+ * width. Stretch the nav container and mega item so stacked columns can use
+ * the full overlay width.
+ */
+.wp-block-navigation__responsive-container.is-menu-open:has(.smm-menu-item) .wp-block-navigation__container,
+.wp-block-navigation__responsive-container.is-menu-open:has(.smm-menu-item) .wp-block-navigation__responsive-dialog {
+	align-items: stretch;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__toggle,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__link,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__panel,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__panel-inner,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__grid {
+	align-self: stretch;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+	box-sizing: border-box;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item {
+	align-items: stretch;
+}
+
+/*
+ * Overlay + smaller viewports: every mega column becomes a stacked row.
+ * Uses --smm-grid-template so desktop layout presets can be overridden cleanly.
+ */
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__grid {
+	--smm-grid-template: minmax(0, 1fr);
+	gap: 1rem;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__grid > .smm-column + .smm-column {
+	padding-inline: 0;
+	border-inline-start: 0;
+	padding-block-start: 1rem;
+	border-block-start: 1px solid var(--smm-hairline, color-mix(in srgb, currentColor 12%, transparent));
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-image-cta--image_beside {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+/* Undo viewport absolute Image CTA fill when columns are stacked as rows. */
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-column--image_cta,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-image-cta {
+	position: relative;
+	inset: auto;
+	height: auto;
+	min-height: 0;
+	overflow: visible;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-image-cta__img,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-square .smm-image-cta__img,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-portrait .smm-image-cta__img,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-aspect-original .smm-image-cta__img {
+	position: static;
+	inset: auto;
+	width: 100%;
+	height: auto;
+	max-height: none;
+	object-fit: cover;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
+	flex: 0 0 auto;
+	height: auto;
+	min-height: 0;
+}
+
+/* Smaller devices: stack every column type into a single row each. */
 @media (max-width: 781px) {
 
+	.smm-menu-item__grid,
+	.smm-menu-item__grid--cols-2,
 	.smm-menu-item__grid--cols-3,
 	.smm-menu-item__grid--cols-4 {
-		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+		--smm-grid-template: minmax(0, 1fr);
+		gap: 1rem;
+	}
+
+	.smm-menu-item__grid > .smm-column + .smm-column {
+		padding-inline: 0;
+		border-inline-start: 0;
+		padding-block-start: 1rem;
+		border-block-start: 1px solid var(--smm-hairline, color-mix(in srgb, currentColor 12%, transparent));
 	}
 
 	.smm-image-cta--image_beside {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.smm-menu-item.smm-panel-width-viewport .smm-column--image_cta,
+	.smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta,
+	.smm-menu-item.smm-panel-width-viewport .smm-image-cta {
+		position: relative;
+		inset: auto;
+		height: auto;
+		min-height: 0;
+		overflow: visible;
+	}
+
+	.smm-menu-item.smm-panel-width-viewport .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-square .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-portrait .smm-image-cta__img,
+	.smm-menu-item.smm-panel-width-viewport .smm-aspect-original .smm-image-cta__img {
+		position: static;
+		inset: auto;
+		width: 100%;
+		height: auto;
+		max-height: none;
+		object-fit: cover;
+	}
+
+	.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media,
+	.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
+		flex: 0 0 auto;
+		height: auto;
+		min-height: 0;
 	}
 }
 
-/* Mobile stacking */
+/* Mobile accordion / narrow phone */
 @media (max-width: 600px) {
 
 	.smm-menu-item__panel {
@@ -624,19 +745,18 @@
 		inline-size: 100%;
 	}
 
+	.smm-menu-item.smm-panel-width-content .smm-menu-item__panel,
 	.smm-menu-item.smm-panel-width-wide .smm-menu-item__panel,
 	.smm-menu-item.smm-panel-width-full .smm-menu-item__panel,
 	.smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
 		position: static;
+		inset: auto;
+		inline-size: 100%;
+		max-inline-size: 100%;
 	}
 
 	.smm-menu-item__grid {
-		grid-template-columns: minmax(0, 1fr) !important;
-	}
-
-	.smm-menu-item__grid--cols-2 > .smm-column {
-		padding-inline: 0;
-		border-inline-start: 0;
+		--smm-grid-template: minmax(0, 1fr);
 	}
 
 	.smm-menu-item.smm-mobile-accordion:not(.is-open) .smm-menu-item__panel {
@@ -662,8 +782,7 @@
 }
 
 /*
- * Collapse only when the panel is actually narrow.
- * Thresholds stay below the default multi-column min width (~42rem for 3 cols).
+ * Collapse when the panel itself is narrow (content/wide modes on large screens).
  */
 @supports (container-type: inline-size) {
 
@@ -674,24 +793,23 @@
 
 	@container smm-panel (max-width: 40rem) {
 
+		.smm-menu-item__grid,
+		.smm-menu-item__grid--cols-2,
 		.smm-menu-item__grid--cols-3,
 		.smm-menu-item__grid--cols-4 {
-			grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+			--smm-grid-template: minmax(0, 1fr);
+			gap: 1rem;
 		}
-	}
 
-	@container smm-panel (max-width: 36rem) {
-
-		.smm-menu-item__grid--cols-2 > .smm-column {
-			padding-inline: 0 !important;
-			border-inline-start: 0 !important;
+		.smm-menu-item__grid > .smm-column + .smm-column {
+			padding-inline: 0;
+			border-inline-start: 0;
+			padding-block-start: 1rem;
+			border-block-start: 1px solid var(--smm-hairline, color-mix(in srgb, currentColor 12%, transparent));
 		}
-	}
 
-	@container smm-panel (max-width: 24rem) {
-
-		.smm-menu-item__grid {
-			grid-template-columns: minmax(0, 1fr) !important;
+		.smm-image-cta--image_beside {
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 }

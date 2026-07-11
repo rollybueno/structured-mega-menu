@@ -103,6 +103,11 @@ class Renderer {
 						)
 					)
 				),
+				/*
+				 * Desktop column template lives on the item so mobile/overlay
+				 * CSS can override --smm-grid-template on the grid child.
+				 */
+				'style' => '--smm-grid-template: ' . $grid_template . ';',
 			)
 		);
 
@@ -196,7 +201,6 @@ class Renderer {
 				<div class="smm-menu-item__panel-inner">
 					<div
 						class="smm-menu-item__grid smm-menu-item__grid--cols-<?php echo esc_attr( (string) $column_count ); ?>"
-						style="<?php echo esc_attr( 'grid-template-columns: ' . $grid_template . ';' ); ?>"
 					>
 						<?php echo $panel_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Column renderers escape. ?>
 					</div>
