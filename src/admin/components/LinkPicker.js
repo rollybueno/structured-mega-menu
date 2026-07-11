@@ -1,9 +1,11 @@
 /**
- * Link destination picker.
+ * Link destination control.
+ *
+ * One URL field for paste/type, plus an optional content browser.
  */
 
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import {
 	Button,
 	TextControl,
@@ -19,6 +21,7 @@ import { searchLinks } from '../api';
  * @param {boolean}  props.opensInNewTab
  * @param {string}   props.labelId
  * @param {string}   props.error
+ * @param {string}   props.label
  * @param {Function} props.onChange
  * @return {JSX.Element} Link picker.
  */
@@ -27,16 +30,20 @@ export default function LinkPicker( {
 	opensInNewTab,
 	labelId,
 	error,
+	label,
 	onChange,
 } ) {
 	const [ search, setSearch ] = useState( '' );
 	const [ results, setResults ] = useState( [] );
 	const [ isSearching, setIsSearching ] = useState( false );
-	const [ isOpen, setIsOpen ] = useState( false );
+	const [ isBrowseOpen, setIsBrowseOpen ] = useState( false );
+	const [ selectedTitle, setSelectedTitle ] = useState( '' );
+	const browseAnchorRef = useRef( null );
 
 	useEffect( () => {
-		if ( ! isOpen || search.length < 2 ) {
+		if ( ! isBrowseOpen || search.trim().length < 2 ) {
 			setResults( [] );
+			setIsSearching( false );
 			return;
 		}
 
@@ -44,7 +51,7 @@ export default function LinkPicker( {
 		const timer = setTimeout( async () => {
 			setIsSearching( true );
 			try {
-				const data = await searchLinks( search );
+				const data = await searchLinks( search.trim() );
 				if ( ! cancelled ) {
 					setResults( Array.isArray( data ) ? data : [] );
 				}
@@ -56,90 +63,184 @@ export default function LinkPicker( {
 			if ( ! cancelled ) {
 				setIsSearching( false );
 			}
-		}, 300 );
+		}, 280 );
 
 		return () => {
 			cancelled = true;
 			clearTimeout( timer );
 		};
-	}, [ search, isOpen ] );
+	}, [ search, isBrowseOpen ] );
+
+	const closeBrowse = () => {
+		setIsBrowseOpen( false );
+		setSearch( '' );
+		setResults( [] );
+	};
+
+	const applyResult = ( result ) => {
+		onChange( {
+			url: result.url,
+			opensInNewTab,
+		} );
+		setSelectedTitle( result.title || '' );
+		closeBrowse();
+	};
+
+	const clearLink = () => {
+		onChange( { url: '', opensInNewTab } );
+		setSelectedTitle( '' );
+	};
 
 	return (
-		<div className="smm-link-picker" id={ labelId }>
-			<div className="smm-link-picker__row">
-				<TextControl
-					label={ __( 'Destination', 'structured-mega-menu' ) }
-					value={ url || '' }
-					onChange={ ( value ) =>
-						onChange( { url: value, opensInNewTab } )
-					}
-					onFocus={ () => setIsOpen( true ) }
-					placeholder={ __(
-						'Search or paste a URL',
-						'structured-mega-menu'
-					) }
-					help={ error }
-					className={ error ? 'smm-field-error' : undefined }
-				/>
-				<Button
-					variant="secondary"
-					onClick={ () => setIsOpen( ( value ) => ! value ) }
-				>
-					{ __( 'Search', 'structured-mega-menu' ) }
-				</Button>
+		<div className="smm-link-control" id={ labelId }>
+			<div className="smm-link-control__header">
+				<span className="smm-field-label">
+					{ label || __( 'Link URL', 'structured-mega-menu' ) }
+				</span>
+				{ url ? (
+					<Button
+						variant="link"
+						className="smm-link-control__clear"
+						onClick={ clearLink }
+					>
+						{ __( 'Clear', 'structured-mega-menu' ) }
+					</Button>
+				) : null }
 			</div>
-			{ isOpen && (
-				<Popover
-					onClose={ () => setIsOpen( false ) }
-					placement="bottom-start"
+
+			{ selectedTitle && url ? (
+				<div className="smm-link-control__selected" role="status">
+					<span className="smm-link-control__selected-title">
+						{ selectedTitle }
+					</span>
+					<span className="smm-link-control__selected-url">
+						{ url }
+					</span>
+				</div>
+			) : null }
+
+			<div className="smm-link-control__row">
+				<div className="smm-link-control__input">
+					<TextControl
+						label={
+							label || __( 'Link URL', 'structured-mega-menu' )
+						}
+						hideLabelFromVision
+						value={ url || '' }
+						onChange={ ( value ) => {
+							setSelectedTitle( '' );
+							onChange( { url: value, opensInNewTab } );
+						} }
+						placeholder={ __(
+							'https://example.com/page',
+							'structured-mega-menu'
+						) }
+						help={ error }
+						className={ error ? 'smm-field-error' : undefined }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+				</div>
+				<div
+					className="smm-link-control__browse"
+					ref={ browseAnchorRef }
 				>
-					<div className="smm-link-picker__popover">
-						<TextControl
-							label={ __(
-								'Search content',
-								'structured-mega-menu'
-							) }
-							value={ search }
-							onChange={ setSearch }
-						/>
-						{ isSearching && <Spinner /> }
-						<ul className="smm-link-picker__results">
-							{ results.map( ( result ) => (
-								<li key={ `${ result.kind }-${ result.id }` }>
-									<Button
-										variant="link"
-										onClick={ () => {
-											onChange( {
-												url: result.url,
-												opensInNewTab,
-											} );
-											setIsOpen( false );
-										} }
-									>
-										{ result.title }
-										<span className="smm-link-picker__meta">
-											{ result.type }
-										</span>
-									</Button>
-								</li>
-							) ) }
-						</ul>
-						<TextControl
-							label={ __( 'Custom URL', 'structured-mega-menu' ) }
-							value={ url || '' }
-							onChange={ ( value ) =>
-								onChange( { url: value, opensInNewTab } )
-							}
-						/>
-					</div>
-				</Popover>
-			) }
+					<Button
+						variant="secondary"
+						aria-expanded={ isBrowseOpen }
+						onClick={ () => setIsBrowseOpen( ( open ) => ! open ) }
+					>
+						{ __( 'Browse', 'structured-mega-menu' ) }
+					</Button>
+					{ isBrowseOpen && (
+						<Popover
+							anchor={ browseAnchorRef.current }
+							onClose={ closeBrowse }
+							placement="bottom-end"
+							focusOnMount="firstElement"
+						>
+							<div className="smm-link-control__popover">
+								<p className="smm-link-control__popover-title">
+									{ __(
+										'Link to existing content',
+										'structured-mega-menu'
+									) }
+								</p>
+								<TextControl
+									label={ __(
+										'Search pages and posts',
+										'structured-mega-menu'
+									) }
+									value={ search }
+									onChange={ setSearch }
+									placeholder={ __(
+										'Type at least 2 characters…',
+										'structured-mega-menu'
+									) }
+									__nextHasNoMarginBottom
+									__next40pxDefaultSize
+								/>
+								{ isSearching ? (
+									<div className="smm-link-control__loading">
+										<Spinner />
+									</div>
+								) : null }
+								{ ! isSearching &&
+								search.trim().length >= 2 &&
+								! results.length ? (
+									<p className="smm-link-control__empty">
+										{ __(
+											'No matching content found.',
+											'structured-mega-menu'
+										) }
+									</p>
+								) : null }
+								{ results.length > 0 ? (
+									<ul className="smm-link-control__results">
+										{ results.map( ( result ) => (
+											<li
+												key={ `${ result.kind }-${ result.id }` }
+											>
+												<button
+													type="button"
+													className="smm-link-control__result"
+													onClick={ () =>
+														applyResult( result )
+													}
+												>
+													<span className="smm-link-control__result-title">
+														{ result.title }
+													</span>
+													<span className="smm-link-control__result-meta">
+														{ result.type }
+														{ result.url
+															? ` · ${ result.url }`
+															: '' }
+													</span>
+												</button>
+											</li>
+										) ) }
+									</ul>
+								) : null }
+								<p className="smm-link-control__hint">
+									{ __(
+										'Or paste any URL in the field beside Browse.',
+										'structured-mega-menu'
+									) }
+								</p>
+							</div>
+						</Popover>
+					) }
+				</div>
+			</div>
+
 			<ToggleControl
 				label={ __( 'Open in new tab', 'structured-mega-menu' ) }
 				checked={ !! opensInNewTab }
 				onChange={ ( value ) =>
 					onChange( { url, opensInNewTab: value } )
 				}
+				__nextHasNoMarginBottom
 			/>
 		</div>
 	);

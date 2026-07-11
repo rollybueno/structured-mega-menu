@@ -29,46 +29,73 @@ export default function LinkListFields( {
 
 	return (
 		<div className="smm-fields smm-fields--link-list">
-			<TextControl
-				label={ __( 'Heading', 'structured-mega-menu' ) }
-				value={ settings.heading || '' }
-				onChange={ ( heading ) => update( { heading } ) }
-			/>
-			{ ( showDescriptions || settings.description ) && (
-				<TextareaControl
-					label={ __( 'Description', 'structured-mega-menu' ) }
-					value={ settings.description || '' }
-					onChange={ ( description ) => update( { description } ) }
-				/>
-			) }
-			<SelectControl
-				label={ __( 'Display style', 'structured-mega-menu' ) }
-				value={ settings.displayStyle || 'simple' }
-				options={ [
-					{
-						label: __( 'Simple', 'structured-mega-menu' ),
-						value: 'simple',
-					},
-					{
-						label: __(
-							'With descriptions',
+			<div className="smm-field-section">
+				<h3 className="smm-field-section__title">
+					{ __( 'Column content', 'structured-mega-menu' ) }
+				</h3>
+				<div className="smm-fields-grid">
+					<TextControl
+						label={ __( 'Heading', 'structured-mega-menu' ) }
+						value={ settings.heading || '' }
+						onChange={ ( heading ) => update( { heading } ) }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					<SelectControl
+						label={ __( 'Display style', 'structured-mega-menu' ) }
+						value={ settings.displayStyle || 'simple' }
+						options={ [
+							{
+								label: __( 'Simple', 'structured-mega-menu' ),
+								value: 'simple',
+							},
+							{
+								label: __(
+									'With descriptions',
+									'structured-mega-menu'
+								),
+								value: 'with_descriptions',
+							},
+						] }
+						onChange={ ( displayStyle ) =>
+							update( { displayStyle } )
+						}
+						help={ __(
+							'Saved descriptions are kept when switching to Simple.',
 							'structured-mega-menu'
-						),
-						value: 'with_descriptions',
-					},
-				] }
-				onChange={ ( displayStyle ) => update( { displayStyle } ) }
-				help={ __(
-					'Saved descriptions are kept when switching to Simple.',
-					'structured-mega-menu'
-				) }
-			/>
-			<Repeater
-				columnId={ columnId }
-				columnType="link_list"
-				items={ settings.items || [] }
-				columnIndex={ columnIndex }
-			/>
+						) }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					{ ( showDescriptions || settings.description ) && (
+						<div className="smm-fields-grid__full">
+							<TextareaControl
+								label={ __(
+									'Description',
+									'structured-mega-menu'
+								) }
+								value={ settings.description || '' }
+								onChange={ ( description ) =>
+									update( { description } )
+								}
+								__nextHasNoMarginBottom
+							/>
+						</div>
+					) }
+				</div>
+			</div>
+
+			<div className="smm-field-section">
+				<h3 className="smm-field-section__title">
+					{ __( 'Links', 'structured-mega-menu' ) }
+				</h3>
+				<Repeater
+					columnId={ columnId }
+					columnType="link_list"
+					items={ settings.items || [] }
+					columnIndex={ columnIndex }
+				/>
+			</div>
 		</div>
 	);
 }

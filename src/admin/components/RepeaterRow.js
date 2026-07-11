@@ -173,50 +173,85 @@ export default function RepeaterRow( {
 			</div>
 			{ isExpanded && (
 				<div className="smm-repeater-row__body">
-					{ columnType === COLUMN_TYPES.ICON_LINKS && (
-						<IconPicker
-							value={ item.icon }
-							onChange={ ( icon ) => onChange( { icon } ) }
+					<div className="smm-fields-grid">
+						{ columnType === COLUMN_TYPES.ICON_LINKS && (
+							<div className="smm-fields-grid__full">
+								<IconPicker
+									value={ item.icon }
+									onChange={ ( icon ) =>
+										onChange( { icon } )
+									}
+								/>
+							</div>
+						) }
+						<TextControl
+							label={ __( 'Link label', 'structured-mega-menu' ) }
+							value={ item.label || '' }
+							onChange={ ( label ) => onChange( { label } ) }
+							help={ labelError?.message }
+							className={
+								labelError ? 'smm-field-error' : undefined
+							}
+							id={ labelFieldId }
+							placeholder={ __(
+								'About us',
+								'structured-mega-menu'
+							) }
+							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 						/>
-					) }
-					<TextControl
-						label={ __( 'Label', 'structured-mega-menu' ) }
-						value={ item.label || '' }
-						onChange={ ( label ) => onChange( { label } ) }
-						help={ labelError?.message }
-						className={ labelError ? 'smm-field-error' : undefined }
-						id={ labelFieldId }
-					/>
-					<TextareaControl
-						label={ __( 'Description', 'structured-mega-menu' ) }
-						value={ item.description || '' }
-						onChange={ ( description ) =>
-							onChange( { description } )
-						}
-					/>
-					<div
-						id={ `smm-field-${ columnPath }.items.${ index }.url` }
-					>
-						<LinkPicker
-							url={ item.url }
-							opensInNewTab={ item.opensInNewTab }
-							error={ urlError?.message }
-							onChange={ ( link ) => onChange( link ) }
+						<div
+							className="smm-fields-grid__full"
+							id={ `smm-field-${ columnPath }.items.${ index }.url` }
+						>
+							<LinkPicker
+								url={ item.url }
+								opensInNewTab={ item.opensInNewTab }
+								error={ urlError?.message }
+								label={ __(
+									'Link URL',
+									'structured-mega-menu'
+								) }
+								onChange={ ( link ) => onChange( link ) }
+							/>
+						</div>
+						<TextareaControl
+							label={ __(
+								'Description',
+								'structured-mega-menu'
+							) }
+							value={ item.description || '' }
+							onChange={ ( description ) =>
+								onChange( { description } )
+							}
+							help={ __(
+								'Optional supporting text under the label.',
+								'structured-mega-menu'
+							) }
+							__nextHasNoMarginBottom
 						/>
+						<div className="smm-fields-grid__full">
+							<ToggleControl
+								label={ __(
+									'Show this link',
+									'structured-mega-menu'
+								) }
+								checked={ item.enabled !== false }
+								onChange={ ( enabled ) =>
+									onChange( { enabled } )
+								}
+								help={
+									item.enabled === false
+										? __(
+												'Hidden links stay saved as drafts and will not render on the front end.',
+												'structured-mega-menu'
+										  )
+										: undefined
+								}
+								__nextHasNoMarginBottom
+							/>
+						</div>
 					</div>
-					<ToggleControl
-						label={ __( 'Enabled', 'structured-mega-menu' ) }
-						checked={ item.enabled !== false }
-						onChange={ ( enabled ) => onChange( { enabled } ) }
-						help={
-							item.enabled === false
-								? __(
-										'Disabled rows are kept as drafts and will not render.',
-										'structured-mega-menu'
-								  )
-								: undefined
-						}
-					/>
 				</div>
 			) }
 		</div>

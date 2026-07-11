@@ -25,104 +25,168 @@ export default function ImageCtaFields( { settings, columnId, onChange } ) {
 
 	return (
 		<div className="smm-fields smm-fields--image-cta">
-			<MediaPicker
-				imageId={ settings.imageId }
-				imageUrl={ settings.imageUrl }
-				onChange={ ( media ) => update( media ) }
-			/>
-			<TextControl
-				label={ __( 'Image alternative text', 'structured-mega-menu' ) }
-				value={ settings.imageAlt || '' }
-				onChange={ ( imageAlt ) => update( { imageAlt } ) }
-				help={ __(
-					'Leave empty for decorative images.',
-					'structured-mega-menu'
-				) }
-				id={ `smm-field-${ path( 'imageAlt' ) }` }
-			/>
-			<SelectControl
-				label={ __( 'Image aspect ratio', 'structured-mega-menu' ) }
-				value={ settings.imageAspectRatio || 'landscape' }
-				options={ [
-					{
-						label: __( 'Original', 'structured-mega-menu' ),
-						value: 'original',
-					},
-					{
-						label: __( 'Landscape', 'structured-mega-menu' ),
-						value: 'landscape',
-					},
-					{
-						label: __( 'Square', 'structured-mega-menu' ),
-						value: 'square',
-					},
-					{
-						label: __( 'Portrait', 'structured-mega-menu' ),
-						value: 'portrait',
-					},
-				] }
-				onChange={ ( imageAspectRatio ) =>
-					update( { imageAspectRatio } )
-				}
-			/>
-			<TextControl
-				label={ __( 'Eyebrow', 'structured-mega-menu' ) }
-				value={ settings.eyebrow || '' }
-				onChange={ ( eyebrow ) => update( { eyebrow } ) }
-			/>
-			<TextControl
-				label={ __( 'Heading', 'structured-mega-menu' ) }
-				value={ settings.heading || '' }
-				onChange={ ( heading ) => update( { heading } ) }
-			/>
-			<TextareaControl
-				label={ __( 'Description', 'structured-mega-menu' ) }
-				value={ settings.description || '' }
-				onChange={ ( description ) => update( { description } ) }
-			/>
-			<TextControl
-				label={ __( 'CTA label', 'structured-mega-menu' ) }
-				value={ settings.ctaLabel || '' }
-				onChange={ ( ctaLabel ) => update( { ctaLabel } ) }
-			/>
-			<LinkPicker
-				url={ settings.url }
-				opensInNewTab={ settings.opensInNewTab }
-				onChange={ ( link ) => update( link ) }
-			/>
-			<SelectControl
-				label={ __( 'Layout', 'structured-mega-menu' ) }
-				value={ settings.layout || 'image_above' }
-				options={ [
-					{
-						label: __(
-							'Image above content',
+			<div className="smm-field-section">
+				<h3 className="smm-field-section__title">
+					{ __( 'Image', 'structured-mega-menu' ) }
+				</h3>
+				<MediaPicker
+					imageId={ settings.imageId }
+					imageUrl={ settings.imageUrl }
+					onChange={ ( media ) => update( media ) }
+				/>
+				<div className="smm-fields-grid">
+					<TextControl
+						label={ __(
+							'Alternative text',
 							'structured-mega-menu'
-						),
-						value: 'image_above',
-					},
-					{
-						label: __(
-							'Image beside content',
+						) }
+						value={ settings.imageAlt || '' }
+						onChange={ ( imageAlt ) => update( { imageAlt } ) }
+						help={ __(
+							'Leave empty for decorative images.',
 							'structured-mega-menu'
-						),
-						value: 'image_beside',
-					},
-				] }
-				onChange={ ( layout ) => update( { layout } ) }
-			/>
-			<ToggleControl
-				label={ __(
-					'Make entire card clickable',
-					'structured-mega-menu'
-				) }
-				checked={ settings.cardClickable !== false }
-				onChange={ ( cardClickable ) => update( { cardClickable } ) }
-				help={ __(
-					'When enabled, the CTA label is shown as text inside a single link.',
-					'structured-mega-menu'
-				) }
-			/>
+						) }
+						id={ `smm-field-${ path( 'imageAlt' ) }` }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					<SelectControl
+						label={ __( 'Aspect ratio', 'structured-mega-menu' ) }
+						value={ settings.imageAspectRatio || 'landscape' }
+						options={ [
+							{
+								label: __( 'Original', 'structured-mega-menu' ),
+								value: 'original',
+							},
+							{
+								label: __(
+									'Landscape',
+									'structured-mega-menu'
+								),
+								value: 'landscape',
+							},
+							{
+								label: __( 'Square', 'structured-mega-menu' ),
+								value: 'square',
+							},
+							{
+								label: __( 'Portrait', 'structured-mega-menu' ),
+								value: 'portrait',
+							},
+						] }
+						onChange={ ( imageAspectRatio ) =>
+							update( { imageAspectRatio } )
+						}
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+				</div>
+			</div>
+
+			<div className="smm-field-section">
+				<h3 className="smm-field-section__title">
+					{ __( 'Copy', 'structured-mega-menu' ) }
+				</h3>
+				<div className="smm-fields-grid">
+					<TextControl
+						label={ __( 'Eyebrow', 'structured-mega-menu' ) }
+						value={ settings.eyebrow || '' }
+						onChange={ ( eyebrow ) => update( { eyebrow } ) }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					<TextControl
+						label={ __( 'Heading', 'structured-mega-menu' ) }
+						value={ settings.heading || '' }
+						onChange={ ( heading ) => update( { heading } ) }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					<div className="smm-fields-grid__full">
+						<TextareaControl
+							label={ __(
+								'Description',
+								'structured-mega-menu'
+							) }
+							value={ settings.description || '' }
+							onChange={ ( description ) =>
+								update( { description } )
+							}
+							__nextHasNoMarginBottom
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div className="smm-field-section">
+				<h3 className="smm-field-section__title">
+					{ __( 'Call to action', 'structured-mega-menu' ) }
+				</h3>
+				<div className="smm-fields-grid">
+					<TextControl
+						label={ __( 'Button label', 'structured-mega-menu' ) }
+						value={ settings.ctaLabel || '' }
+						onChange={ ( ctaLabel ) => update( { ctaLabel } ) }
+						placeholder={ __(
+							'Learn more',
+							'structured-mega-menu'
+						) }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					<div className="smm-fields-grid__full">
+						<LinkPicker
+							url={ settings.url }
+							opensInNewTab={ settings.opensInNewTab }
+							label={ __(
+								'Button link URL',
+								'structured-mega-menu'
+							) }
+							onChange={ ( link ) => update( link ) }
+						/>
+					</div>
+					<SelectControl
+						label={ __( 'Layout', 'structured-mega-menu' ) }
+						value={ settings.layout || 'image_above' }
+						options={ [
+							{
+								label: __(
+									'Image above content',
+									'structured-mega-menu'
+								),
+								value: 'image_above',
+							},
+							{
+								label: __(
+									'Image beside content',
+									'structured-mega-menu'
+								),
+								value: 'image_beside',
+							},
+						] }
+						onChange={ ( layout ) => update( { layout } ) }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					/>
+					<div className="smm-fields-grid__full">
+						<ToggleControl
+							label={ __(
+								'Make entire card clickable',
+								'structured-mega-menu'
+							) }
+							checked={ settings.cardClickable !== false }
+							onChange={ ( cardClickable ) =>
+								update( { cardClickable } )
+							}
+							help={ __(
+								'When enabled, the card uses one link and the button label is shown as text.',
+								'structured-mega-menu'
+							) }
+							__nextHasNoMarginBottom
+						/>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }
