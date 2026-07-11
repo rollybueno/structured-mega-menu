@@ -114,13 +114,32 @@ class Assets {
 	}
 
 	/**
-	 * Enqueues the Navigation allowedBlocks extension in the block editor.
+	 * Enqueues the Navigation extension and block editor config.
 	 *
 	 * @return void
 	 */
 	public static function enqueue_block_editor_assets() {
-		if ( wp_script_is( 'smm-navigation-extension', 'registered' ) ) {
-			wp_enqueue_script( 'smm-navigation-extension' );
+		if ( ! wp_script_is( 'smm-navigation-extension', 'registered' ) ) {
+			self::register_scripts();
 		}
+
+		if ( ! wp_script_is( 'smm-navigation-extension', 'registered' ) ) {
+			return;
+		}
+
+		wp_enqueue_script( 'smm-navigation-extension' );
+
+		/*
+		 * Shared by the navigation extension and the menu-item block editor UI.
+		 * Attached here because the block.json script handle is generated at runtime.
+		 */
+		wp_localize_script(
+			'smm-navigation-extension',
+			'smmBlockEditor',
+			array(
+				'adminUrl'  => esc_url_raw( admin_url( 'themes.php?page=structured-mega-menu' ) ),
+				'restNonce' => wp_create_nonce( 'wp_rest' ),
+			)
+		);
 	}
 }

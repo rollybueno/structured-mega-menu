@@ -4,4 +4,140 @@
 
 .smm-menu-item {
 	list-style: none;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+
+.smm-menu-item__trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	min-height: 1.5em;
+}
+
+.smm-menu-item__chevron {
+	font-size: 0.75em;
+	opacity: 0.7;
+	line-height: 1;
+}
+
+.smm-menu-item.is-empty-config .smm-menu-item__trigger,
+.smm-menu-item.is-missing-config .smm-menu-item__trigger {
+	outline: 1px dashed #c3c4c7;
+	outline-offset: 2px;
+	padding-inline: 0.25rem;
+}
+
+.smm-menu-item.is-missing-config .smm-menu-item__trigger {
+	outline-color: #dba617;
+}
+
+.smm-menu-item__editor-panel {
+	width: min(100%, 36rem);
+	padding: 0.75rem;
+	border: 1px solid #dcdcde;
+	background: #fff;
+	box-sizing: border-box;
+}
+
+.smm-menu-item__config-name {
+	margin: 0 0 0.5rem;
+	font-size: 12px;
+	color: #50575e;
+}
+
+.smm-menu-preview {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.smm-menu-preview.is-loading,
+.smm-menu-preview.is-empty,
+.smm-menu-preview.is-error {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: #50575e;
+	font-size: 13px;
+}
+
+.smm-menu-preview.is-error {
+	color: #996800;
+}
+
+.smm-menu-preview__header {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.75rem;
+	align-items: baseline;
+}
+
+.smm-menu-preview__meta {
+	color: #646970;
+	font-size: 12px;
+}
+
+.smm-menu-preview__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+	gap: 0.75rem;
+}
+
+.smm-preview-column {
+	border: 1px solid #e0e0e0;
+	padding: 0.6rem;
+	background: #f6f7f7;
+	min-width: 0;
+}
+
+.smm-preview-column.is-disabled {
+	opacity: 0.65;
+}
+
+.smm-preview-column__type {
+	display: block;
+	font-size: 12px;
+	margin-block-end: 0.25rem;
+}
+
+.smm-preview-column__detail,
+.smm-preview-column__badge {
+	display: block;
+	font-size: 11px;
+	color: #646970;
+}
+
+.smm-preview-column__image {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-block: 0.4rem;
+	max-height: 4.5rem;
+	object-fit: cover;
+}
+
+.smm-preview-column__links {
+	margin: 0.35rem 0 0;
+	padding-inline-start: 1rem;
+	font-size: 12px;
+}
+
+.smm-mega-menu-selector__loading,
+.smm-mega-menu-selector__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.smm-mega-menu-selector__actions {
+	margin-block-start: 0.75rem;
+}
+
+.smm-mega-menu-selector .components-notice {
+	margin-block: 0.75rem 0;
 }

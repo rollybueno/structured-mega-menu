@@ -407,8 +407,24 @@ export default function App() {
 	const view = useSelect( ( select ) => select( STORE_NAME ).getView(), [] );
 
 	useEffect( () => {
-		loadMenus();
 		loadIcons();
+
+		const params = new URLSearchParams( window.location.search );
+		const action = params.get( 'action' );
+
+		if ( action === 'new' ) {
+			openNew();
+			return;
+		}
+
+		const menuId = parseInt( params.get( 'menu' ) || '', 10 );
+
+		if ( menuId > 0 ) {
+			openMenu( menuId );
+			return;
+		}
+
+		loadMenus();
 	}, [] );
 
 	return (

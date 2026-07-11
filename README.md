@@ -119,6 +119,6 @@ Follows WordPress admin/editor support targets. Frontend uses modern CSS (grid, 
 
 * **Phase 1 (complete):** bootstrap, CPT, capabilities, meta, schema/sanitizer/migrations, column registry, build tooling
 * **Phase 2 (complete):** Admin flexible editor (list, columns, repeaters, validation, save, undo)
-* **Phase 3:** Navigation block editor UX
+* **Phase 3 (complete):** Navigation menu-item block editor UX (selector, preview, create/edit shortcuts)
 * **Phase 4:** Frontend renderer + Interactivity API
 * **Phase 5:** Full test suite and .org polish
