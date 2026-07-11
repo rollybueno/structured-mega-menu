@@ -8,6 +8,8 @@
 namespace StructuredMegaMenu\Column_Types;
 
 use StructuredMegaMenu\Helpers;
+use StructuredMegaMenu\Icons;
+use StructuredMegaMenu\Markup;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -146,8 +148,52 @@ class Icon_Links implements Column_Type {
 	 * @return string
 	 */
 	public function render( array $data, array $context = array() ): string {
-		unset( $data, $context );
-		return '';
+		unset( $context );
+
+		$display       = isset( $data['displayStyle'] ) ? $data['displayStyle'] : 'descriptive';
+		$icon_position = isset( $data['iconPosition'] ) ? $data['iconPosition'] : 'left';
+		$items         = isset( $data['items'] ) && is_array( $data['items'] ) ? $data['items'] : array();
+
+		$html  = '<div class="smm-icon-links smm-icon-links--' . esc_attr( $display ) . ' smm-icon-pos-' . esc_attr( $icon_position ) . '">';
+		$html .= Markup::heading( isset( $data['heading'] ) ? $data['heading'] : '' );
+		$html .= Markup::description( isset( $data['description'] ) ? $data['description'] : '' );
+		$html .= '<ul class="smm-icon-links__list">';
+
+		foreach ( $items as $item ) {
+			if ( empty( $item['enabled'] ) ) {
+				continue;
+			}
+
+			$label = isset( $item['label'] ) ? $item['label'] : '';
+			$url   = isset( $item['url'] ) ? $item['url'] : '';
+
+			if ( '' === $label || '' === $url ) {
+				continue;
+			}
+
+			$icon_html = Icons::render( isset( $item['icon'] ) ? $item['icon'] : array() );
+			$desc      = '';
+			if ( 'descriptive' === $display && ! empty( $item['description'] ) ) {
+				$desc = Markup::description( $item['description'], 'smm-icon-links__item-description' );
+			}
+
+			$html .= '<li class="smm-icon-links__item">';
+			$html .= sprintf(
+				'<a class="smm-icon-links__link" %1$s>',
+				Markup::link_attributes( $url, ! empty( $item['opensInNewTab'] ) )
+			);
+			if ( $icon_html ) {
+				$html .= '<span class="smm-icon-links__icon">' . $icon_html . '</span>';
+			}
+			$html .= '<span class="smm-icon-links__text">';
+			$html .= '<span class="smm-icon-links__label">' . esc_html( $label ) . '</span>';
+			$html .= $desc;
+			$html .= '</span></a></li>';
+		}
+
+		$html .= '</ul></div>';
+
+		return $html;
 	}
 
 	/**

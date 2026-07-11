@@ -6,8 +6,8 @@
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {
-		"start": "wp-scripts start",
-		"build": "wp-scripts build",
+		"start": "wp-scripts start --experimental-modules",
+		"build": "wp-scripts build --experimental-modules",
 		"lint:js": "wp-scripts lint-js",
 		"lint:css": "wp-scripts lint-style",
 		"format": "wp-scripts format",

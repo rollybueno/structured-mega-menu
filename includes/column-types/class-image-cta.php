@@ -8,6 +8,7 @@
 namespace StructuredMegaMenu\Column_Types;
 
 use StructuredMegaMenu\Helpers;
+use StructuredMegaMenu\Markup;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -141,8 +142,97 @@ class Image_Cta implements Column_Type {
 	 * @return string
 	 */
 	public function render( array $data, array $context = array() ): string {
-		// Frontend rendering is implemented in Phase 4.
-		unset( $data, $context );
-		return '';
+		unset( $context );
+
+		$layout         = isset( $data['layout'] ) ? $data['layout'] : 'image_above';
+		$card_clickable = ! empty( $data['cardClickable'] );
+		$url            = isset( $data['url'] ) ? $data['url'] : '';
+		$cta_label      = isset( $data['ctaLabel'] ) ? $data['ctaLabel'] : '';
+		$has_link       = is_string( $url ) && '' !== $url;
+		$opens_in_new   = ! empty( $data['opensInNewTab'] );
+
+		$image_html = $this->render_image( $data );
+		$body       = '';
+		$body      .= Markup::heading( isset( $data['eyebrow'] ) ? $data['eyebrow'] : '', 'smm-column__eyebrow' );
+		$body      .= Markup::heading( isset( $data['heading'] ) ? $data['heading'] : '', 'smm-column__heading' );
+		$body      .= Markup::description( isset( $data['description'] ) ? $data['description'] : '' );
+
+		if ( $has_link && '' !== $cta_label ) {
+			if ( $card_clickable ) {
+				$body .= sprintf(
+					'<span class="smm-column__cta smm-column__cta--text">%s</span>',
+					esc_html( $cta_label )
+				);
+			} else {
+				$body .= sprintf(
+					'<a class="smm-column__cta" %1$s>%2$s</a>',
+					Markup::link_attributes( $url, $opens_in_new ),
+					esc_html( $cta_label )
+				);
+			}
+		}
+
+		$inner = sprintf(
+			'<div class="smm-image-cta smm-image-cta--%1$s">%2$s<div class="smm-image-cta__body">%3$s</div></div>',
+			esc_attr( $layout ),
+			$image_html,
+			$body
+		);
+
+		if ( $card_clickable && $has_link ) {
+			return sprintf(
+				'<a class="smm-image-cta__card-link" %1$s>%2$s</a>',
+				Markup::link_attributes( $url, $opens_in_new ),
+				$inner
+			);
+		}
+
+		return $inner;
+	}
+
+	/**
+	 * Renders the image element.
+	 *
+	 * @param array $data Settings.
+	 * @return string
+	 */
+	private function render_image( array $data ) {
+		$image_id  = isset( $data['imageId'] ) ? absint( $data['imageId'] ) : 0;
+		$image_alt = isset( $data['imageAlt'] ) ? $data['imageAlt'] : '';
+		$aspect    = isset( $data['imageAspectRatio'] ) ? sanitize_key( $data['imageAspectRatio'] ) : 'landscape';
+
+		// Empty/decorative images use empty alt — never copy the heading.
+		$alt = is_string( $image_alt ) ? $image_alt : '';
+
+		$img = '';
+		if ( $image_id > 0 ) {
+			$img = wp_get_attachment_image(
+				$image_id,
+				'large',
+				false,
+				array(
+					'class'    => 'smm-image-cta__img',
+					'alt'      => $alt,
+					'loading'  => 'lazy',
+					'decoding' => 'async',
+				)
+			);
+		} elseif ( ! empty( $data['imageUrl'] ) ) {
+			$img = sprintf(
+				'<img class="smm-image-cta__img" src="%1$s" alt="%2$s" loading="lazy" decoding="async" />',
+				esc_url( $data['imageUrl'] ),
+				esc_attr( $alt )
+			);
+		}
+
+		if ( ! $img ) {
+			return '';
+		}
+
+		return sprintf(
+			'<div class="smm-image-cta__media smm-aspect-%1$s">%2$s</div>',
+			esc_attr( $aspect ),
+			$img
+		);
 	}
 }

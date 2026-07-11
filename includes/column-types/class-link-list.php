@@ -8,6 +8,7 @@
 namespace StructuredMegaMenu\Column_Types;
 
 use StructuredMegaMenu\Helpers;
+use StructuredMegaMenu\Markup;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -134,8 +135,46 @@ class Link_List implements Column_Type {
 	 * @return string
 	 */
 	public function render( array $data, array $context = array() ): string {
-		unset( $data, $context );
-		return '';
+		unset( $context );
+
+		$display = isset( $data['displayStyle'] ) ? $data['displayStyle'] : 'simple';
+		$items   = isset( $data['items'] ) && is_array( $data['items'] ) ? $data['items'] : array();
+
+		$html  = '<div class="smm-link-list smm-link-list--' . esc_attr( $display ) . '">';
+		$html .= Markup::heading( isset( $data['heading'] ) ? $data['heading'] : '' );
+		$html .= Markup::description( isset( $data['description'] ) ? $data['description'] : '' );
+		$html .= '<ul class="smm-link-list__list">';
+
+		foreach ( $items as $item ) {
+			if ( empty( $item['enabled'] ) ) {
+				continue;
+			}
+
+			$label = isset( $item['label'] ) ? $item['label'] : '';
+			$url   = isset( $item['url'] ) ? $item['url'] : '';
+
+			if ( '' === $label || '' === $url ) {
+				continue;
+			}
+
+			$desc = '';
+			if ( 'with_descriptions' === $display && ! empty( $item['description'] ) ) {
+				$desc = Markup::description( $item['description'], 'smm-link-list__item-description' );
+			}
+
+			$html .= '<li class="smm-link-list__item">';
+			$html .= sprintf(
+				'<a class="smm-link-list__link" %1$s><span class="smm-link-list__label">%2$s</span>%3$s</a>',
+				Markup::link_attributes( $url, ! empty( $item['opensInNewTab'] ) ),
+				esc_html( $label ),
+				$desc
+			);
+			$html .= '</li>';
+		}
+
+		$html .= '</ul></div>';
+
+		return $html;
 	}
 
 	/**

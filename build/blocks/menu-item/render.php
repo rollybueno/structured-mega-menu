@@ -2,8 +2,6 @@
 /**
  * Server-side render for the mega menu item block.
  *
- * Full markup is implemented in Phase 4.
- *
  * @package StructuredMegaMenu
  *
  * @var array    $attributes Block attributes.
@@ -13,4 +11,4 @@
 
 defined( 'ABSPATH' ) || exit;
 
-echo \StructuredMegaMenu\Renderer::render_menu_item_placeholder( $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Renderer escapes output.
+echo \StructuredMegaMenu\Renderer::render_menu_item( $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Renderer escapes output.
