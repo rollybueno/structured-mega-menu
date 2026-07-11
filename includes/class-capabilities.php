@@ -55,7 +55,44 @@ class Capabilities {
 	 * @return void
 	 */
 	public static function init() {
-		// Reserved for future capability filters.
+		add_filter( 'map_meta_cap', array( __CLASS__, 'map_meta_cap' ), 10, 4 );
+		add_action( 'admin_init', array( __CLASS__, 'maybe_add_caps' ) );
+	}
+
+	/**
+	 * Maps custom mega-menu capabilities to edit_theme_options.
+	 *
+	 * This keeps REST/CPT checks working even when activation caps were
+	 * never written to the role (common during local development).
+	 *
+	 * @param string[] $caps    Required primitive capabilities.
+	 * @param string   $cap     Capability being checked.
+	 * @param int      $user_id User ID.
+	 * @param array    $args    Extra arguments.
+	 * @return string[]
+	 */
+	public static function map_meta_cap( $caps, $cap, $user_id, $args ) {
+		unset( $user_id, $args );
+
+		if ( in_array( $cap, self::get_caps(), true ) ) {
+			return array( self::MANAGE );
+		}
+
+		return $caps;
+	}
+
+	/**
+	 * Ensures role capabilities exist after upgrades or skipped activation.
+	 *
+	 * @return void
+	 */
+	public static function maybe_add_caps() {
+		if ( get_option( 'smm_caps_version' ) === SMM_VERSION ) {
+			return;
+		}
+
+		self::add_caps();
+		update_option( 'smm_caps_version', SMM_VERSION, false );
 	}
 
 	/**
@@ -122,10 +159,20 @@ class Capabilities {
 	 * @return bool
 	 */
 	public static function user_can_edit_menu( $post_id ) {
+		if ( ! self::current_user_can_manage() ) {
+			return false;
+		}
+
 		$post_id = absint( $post_id );
 
 		if ( ! $post_id ) {
-			return self::current_user_can_manage();
+			return true;
+		}
+
+		$post = get_post( $post_id );
+
+		if ( ! $post || SMM_POST_TYPE !== $post->post_type ) {
+			return false;
 		}
 
 		return current_user_can( 'edit_post', $post_id );

@@ -78,4 +78,26 @@ class CapabilitiesTest extends TestCase_Unit {
 		$GLOBALS['smm_test_user_caps'] = array();
 		$this->assertFalse( REST_Controller::can_manage() );
 	}
+
+	/**
+	 * @return void
+	 */
+	public function test_map_meta_cap_routes_to_edit_theme_options() {
+		$mapped = Capabilities::map_meta_cap(
+			array( 'do_not_allow' ),
+			'edit_smm_mega_menus',
+			1,
+			array()
+		);
+
+		$this->assertSame( array( 'edit_theme_options' ), $mapped );
+
+		$passthrough = Capabilities::map_meta_cap(
+			array( 'read' ),
+			'read',
+			1,
+			array()
+		);
+		$this->assertSame( array( 'read' ), $passthrough );
+	}
 }

@@ -21,6 +21,7 @@ class Activator {
 	 */
 	public static function activate() {
 		Capabilities::add_caps();
+		update_option( 'smm_caps_version', SMM_VERSION, false );
 		Post_Type::register();
 		flush_rewrite_rules( false );
 

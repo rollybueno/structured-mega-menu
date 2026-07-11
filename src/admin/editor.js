@@ -189,13 +189,22 @@ export async function saveCurrent() {
 
 		return { ok: true, post };
 	} catch ( error ) {
+		let details = '';
+		if ( typeof error?.code === 'string' ) {
+			details = ` (${ error.code })`;
+		} else if ( error?.data?.status ) {
+			details = ` (HTTP ${ error.data.status })`;
+		}
+
 		setSaveStatus( 'error' );
 		setError(
-			error?.message ||
+			`${
+				error?.message ||
 				__(
 					'Save failed. Your changes were kept.',
 					'structured-mega-menu'
 				)
+			}${ details }`
 		);
 		return { ok: false, error };
 	}

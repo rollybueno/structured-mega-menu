@@ -67,7 +67,7 @@ class Post_Type {
 			'query_var'             => false,
 			'can_export'            => true,
 			'delete_with_user'      => false,
-			'supports'              => array( 'title' ),
+			'supports'              => array( 'title', 'custom-fields' ),
 			'menu_icon'             => 'dashicons-menu-alt3',
 			'capability_type'       => array( 'smm_mega_menu', 'smm_mega_menus' ),
 			'map_meta_cap'          => true,

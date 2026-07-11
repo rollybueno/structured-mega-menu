@@ -46,7 +46,7 @@ export async function fetchMenu( id ) {
  */
 export async function createMenu( payload ) {
 	return apiFetch( {
-		path: '/wp/v2/smm-mega-menus',
+		path: '/wp/v2/smm-mega-menus?context=edit',
 		method: 'POST',
 		data: payload,
 	} );
@@ -61,7 +61,7 @@ export async function createMenu( payload ) {
  */
 export async function updateMenu( id, payload ) {
 	return apiFetch( {
-		path: `/wp/v2/smm-mega-menus/${ id }`,
+		path: `/wp/v2/smm-mega-menus/${ id }?context=edit`,
 		method: 'POST',
 		data: payload,
 	} );
@@ -126,11 +126,11 @@ export async function updatePluginSettings( settings ) {
  * @return {Object} Schema object.
  */
 export function parseSchemaFromPost( post, fallback ) {
-	const raw =
-		post?.meta?._smm_menu_schema || post?.meta?._smm_menu_schema || '';
+	const raw = post?.meta?._smm_menu_schema;
 
 	if ( ! raw ) {
-		return { ...fallback, columns: [] };
+		// Keep the in-memory schema when REST omits meta (e.g. wrong context).
+		return fallback;
 	}
 
 	if ( typeof raw === 'object' ) {

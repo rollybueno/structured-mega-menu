@@ -37,12 +37,7 @@ class Meta {
 				'description'       => __( 'Canonical JSON schema for the mega menu configuration.', 'structured-mega-menu' ),
 				'single'            => true,
 				'default'           => '',
-				'show_in_rest'      => array(
-					'schema' => array(
-						'type'    => 'string',
-						'context' => array( 'edit' ),
-					),
-				),
+				'show_in_rest'      => true,
 				'auth_callback'     => array( __CLASS__, 'auth_callback' ),
 				'sanitize_callback' => array( __CLASS__, 'sanitize_schema_meta' ),
 			)
@@ -56,12 +51,7 @@ class Meta {
 				'description'       => __( 'Schema version for the mega menu configuration.', 'structured-mega-menu' ),
 				'single'            => true,
 				'default'           => SMM_SCHEMA_VERSION,
-				'show_in_rest'      => array(
-					'schema' => array(
-						'type'    => 'integer',
-						'context' => array( 'edit' ),
-					),
-				),
+				'show_in_rest'      => true,
 				'auth_callback'     => array( __CLASS__, 'auth_callback' ),
 				'sanitize_callback' => 'absint',
 			)
@@ -75,12 +65,7 @@ class Meta {
 				'description'       => __( 'JSON-encoded top-level menu settings snapshot.', 'structured-mega-menu' ),
 				'single'            => true,
 				'default'           => '',
-				'show_in_rest'      => array(
-					'schema' => array(
-						'type'    => 'string',
-						'context' => array( 'edit' ),
-					),
-				),
+				'show_in_rest'      => true,
 				'auth_callback'     => array( __CLASS__, 'auth_callback' ),
 				'sanitize_callback' => array( __CLASS__, 'sanitize_settings_meta' ),
 			)

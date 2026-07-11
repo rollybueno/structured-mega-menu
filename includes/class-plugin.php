@@ -83,7 +83,7 @@ class Plugin {
 		Assets::init();
 		Admin::init();
 		REST_Controller::init();
-		Icons::init();
+		add_action( 'init', array( Icons::class, 'init' ), 5 );
 
 		add_action( 'init', array( $this, 'register_blocks' ) );
 	}
