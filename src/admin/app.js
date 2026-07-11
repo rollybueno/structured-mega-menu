@@ -291,28 +291,35 @@ function MenuEditor() {
 							options={ [
 								{
 									label: __(
-										'Match navigation width',
+										'Menu bar — under the navigation item',
 										'structured-mega-menu'
 									),
 									value: 'navigation',
 								},
 								{
 									label: __(
-										'Match content width',
+										'Content — theme content column',
 										'structured-mega-menu'
 									),
 									value: 'content',
 								},
 								{
 									label: __(
-										'Match wide width',
+										'Wide — theme wide layout',
 										'structured-mega-menu'
 									),
 									value: 'wide',
 								},
 								{
 									label: __(
-										'Full viewport width',
+										'Full — theme full layout',
+										'structured-mega-menu'
+									),
+									value: 'full',
+								},
+								{
+									label: __(
+										'Edge to edge — browser width',
 										'structured-mega-menu'
 									),
 									value: 'viewport',
@@ -320,6 +327,32 @@ function MenuEditor() {
 							] }
 							onChange={ ( panelWidth ) =>
 								updateSettings( { panelWidth } )
+							}
+							help={
+								{
+									navigation: __(
+										'Dropdown stays aligned with the menu item, similar to a normal submenu.',
+										'structured-mega-menu'
+									),
+									content: __(
+										'Centered panel using the theme’s content width (theme.json contentSize).',
+										'structured-mega-menu'
+									),
+									wide: __(
+										'Centered panel using the theme’s wide width (theme.json wideSize).',
+										'structured-mega-menu'
+									),
+									full: __(
+										'Centered panel using the theme’s full width (theme.json fullSize), when the theme defines one.',
+										'structured-mega-menu'
+									),
+									viewport: __(
+										'Stretches across the entire browser window, edge to edge.',
+										'structured-mega-menu'
+									),
+								}[
+									schema.settings?.panelWidth || 'navigation'
+								]
 							}
 							__nextHasNoMarginBottom
 							__next40pxDefaultSize

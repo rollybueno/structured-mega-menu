@@ -17,7 +17,7 @@ export const COLUMN_TYPES = {
 	LINK_LIST: 'link_list',
 };
 
-export const PANEL_WIDTHS = [ 'navigation', 'content', 'wide', 'viewport' ];
+export const PANEL_WIDTHS = [ 'navigation', 'content', 'wide', 'full', 'viewport' ];
 export const OPENING_MODES = [ 'click', 'hover' ];
 export const MOBILE_MODES = [ 'accordion', 'expanded' ];
 

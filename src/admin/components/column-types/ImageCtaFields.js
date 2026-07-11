@@ -121,7 +121,7 @@ export default function ImageCtaFields( { settings, columnId, onChange } ) {
 				<h3 className="smm-field-section__title">
 					{ __( 'Call to action', 'structured-mega-menu' ) }
 				</h3>
-				<div className="smm-fields-grid">
+				<div className="smm-button-fields">
 					<TextControl
 						label={ __( 'Button label', 'structured-mega-menu' ) }
 						value={ settings.ctaLabel || '' }
@@ -133,17 +133,14 @@ export default function ImageCtaFields( { settings, columnId, onChange } ) {
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize
 					/>
-					<div className="smm-fields-grid__full">
-						<LinkPicker
-							url={ settings.url }
-							opensInNewTab={ settings.opensInNewTab }
-							label={ __(
-								'Button link URL',
-								'structured-mega-menu'
-							) }
-							onChange={ ( link ) => update( link ) }
-						/>
-					</div>
+					<LinkPicker
+						url={ settings.url }
+						opensInNewTab={ settings.opensInNewTab }
+						label={ __( 'Button link', 'structured-mega-menu' ) }
+						onChange={ ( link ) => update( link ) }
+					/>
+				</div>
+				<div className="smm-fields-grid">
 					<SelectControl
 						label={ __( 'Layout', 'structured-mega-menu' ) }
 						value={ settings.layout || 'image_above' }

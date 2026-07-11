@@ -51,12 +51,13 @@ class SchemaTest extends TestCase_Unit {
 	/**
 	 * @return void
 	 */
-	public function test_panel_widths_include_wide() {
+	public function test_panel_widths_include_wide_and_full() {
 		$widths = Schema::get_panel_widths();
 
 		$this->assertContains( 'navigation', $widths );
 		$this->assertContains( 'content', $widths );
 		$this->assertContains( 'wide', $widths );
+		$this->assertContains( 'full', $widths );
 		$this->assertContains( 'viewport', $widths );
 	}
 

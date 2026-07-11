@@ -111,14 +111,21 @@ export default function RepeaterRow( {
 							className="smm-repeater-row__icon"
 							aria-hidden="true"
 						>
-							{ item.icon?.value || '•' }
+							{ item.icon?.source === 'media' &&
+							item.icon?.url ? (
+								<img src={ item.icon.url } alt="" />
+							) : (
+								item.icon?.value || '•'
+							) }
 						</span>
 					) }
-					<span className="smm-repeater-row__title">
-						{ summary.title }
-					</span>
-					<span className="smm-repeater-row__subtitle">
-						{ summary.subtitle }
+					<span className="smm-repeater-row__text">
+						<span className="smm-repeater-row__title">
+							{ summary.title }
+						</span>
+						<span className="smm-repeater-row__subtitle">
+							{ summary.subtitle }
+						</span>
 					</span>
 				</button>
 				<DropdownMenu

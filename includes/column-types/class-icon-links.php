@@ -224,8 +224,14 @@ class Icon_Links implements Column_Type {
 			}
 
 			$value = '';
+			$url   = '';
 			if ( 'media' === $source ) {
-				$value = (string) absint( isset( $icon['value'] ) ? $icon['value'] : 0 );
+				$attachment_id = absint( isset( $icon['value'] ) ? $icon['value'] : 0 );
+				$value         = $attachment_id ? (string) $attachment_id : '';
+				if ( $attachment_id ) {
+					$attachment_url = wp_get_attachment_image_url( $attachment_id, 'thumbnail' );
+					$url            = $attachment_url ? $attachment_url : '';
+				}
 			} else {
 				$value = isset( $icon['value'] ) ? sanitize_key( $icon['value'] ) : '';
 			}
@@ -236,6 +242,7 @@ class Icon_Links implements Column_Type {
 				'icon'          => array(
 					'source' => $source,
 					'value'  => $value,
+					'url'    => $url,
 				),
 				'label'         => isset( $item['label'] ) ? sanitize_text_field( $item['label'] ) : '',
 				'description'   => isset( $item['description'] ) ? sanitize_textarea_field( $item['description'] ) : '',

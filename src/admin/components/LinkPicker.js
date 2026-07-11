@@ -93,20 +93,9 @@ export default function LinkPicker( {
 
 	return (
 		<div className="smm-link-control" id={ labelId }>
-			<div className="smm-link-control__header">
-				<span className="smm-field-label">
-					{ label || __( 'Link URL', 'structured-mega-menu' ) }
-				</span>
-				{ url ? (
-					<Button
-						variant="link"
-						className="smm-link-control__clear"
-						onClick={ clearLink }
-					>
-						{ __( 'Clear', 'structured-mega-menu' ) }
-					</Button>
-				) : null }
-			</div>
+			<span className="smm-field-label">
+				{ label || __( 'Link URL', 'structured-mega-menu' ) }
+			</span>
 
 			{ selectedTitle && url ? (
 				<div className="smm-link-control__selected" role="status">
@@ -141,96 +130,107 @@ export default function LinkPicker( {
 						__next40pxDefaultSize
 					/>
 				</div>
-				<div
-					className="smm-link-control__browse"
-					ref={ browseAnchorRef }
-				>
-					<Button
-						variant="secondary"
-						aria-expanded={ isBrowseOpen }
-						onClick={ () => setIsBrowseOpen( ( open ) => ! open ) }
+				<div className="smm-field-actions smm-link-control__actions">
+					<div
+						className="smm-link-control__browse"
+						ref={ browseAnchorRef }
 					>
-						{ __( 'Browse', 'structured-mega-menu' ) }
-					</Button>
-					{ isBrowseOpen && (
-						<Popover
-							anchor={ browseAnchorRef.current }
-							onClose={ closeBrowse }
-							placement="bottom-end"
-							focusOnMount="firstElement"
+						<Button
+							variant="secondary"
+							aria-expanded={ isBrowseOpen }
+							onClick={ () =>
+								setIsBrowseOpen( ( open ) => ! open )
+							}
 						>
-							<div className="smm-link-control__popover">
-								<p className="smm-link-control__popover-title">
-									{ __(
-										'Link to existing content',
-										'structured-mega-menu'
-									) }
-								</p>
-								<TextControl
-									label={ __(
-										'Search pages and posts',
-										'structured-mega-menu'
-									) }
-									value={ search }
-									onChange={ setSearch }
-									placeholder={ __(
-										'Type at least 2 characters…',
-										'structured-mega-menu'
-									) }
-									__nextHasNoMarginBottom
-									__next40pxDefaultSize
-								/>
-								{ isSearching ? (
-									<div className="smm-link-control__loading">
-										<Spinner />
-									</div>
-								) : null }
-								{ ! isSearching &&
-								search.trim().length >= 2 &&
-								! results.length ? (
-									<p className="smm-link-control__empty">
+							{ __( 'Browse', 'structured-mega-menu' ) }
+						</Button>
+						{ isBrowseOpen && (
+							<Popover
+								anchor={ browseAnchorRef.current }
+								onClose={ closeBrowse }
+								placement="bottom-end"
+								focusOnMount="firstElement"
+							>
+								<div className="smm-link-control__popover">
+									<p className="smm-link-control__popover-title">
 										{ __(
-											'No matching content found.',
+											'Link to existing content',
 											'structured-mega-menu'
 										) }
 									</p>
-								) : null }
-								{ results.length > 0 ? (
-									<ul className="smm-link-control__results">
-										{ results.map( ( result ) => (
-											<li
-												key={ `${ result.kind }-${ result.id }` }
-											>
-												<button
-													type="button"
-													className="smm-link-control__result"
-													onClick={ () =>
-														applyResult( result )
-													}
+									<TextControl
+										label={ __(
+											'Search pages and posts',
+											'structured-mega-menu'
+										) }
+										value={ search }
+										onChange={ setSearch }
+										placeholder={ __(
+											'Type at least 2 characters…',
+											'structured-mega-menu'
+										) }
+										__nextHasNoMarginBottom
+										__next40pxDefaultSize
+									/>
+									{ isSearching ? (
+										<div className="smm-link-control__loading">
+											<Spinner />
+										</div>
+									) : null }
+									{ ! isSearching &&
+									search.trim().length >= 2 &&
+									! results.length ? (
+										<p className="smm-link-control__empty">
+											{ __(
+												'No matching content found.',
+												'structured-mega-menu'
+											) }
+										</p>
+									) : null }
+									{ results.length > 0 ? (
+										<ul className="smm-link-control__results">
+											{ results.map( ( result ) => (
+												<li
+													key={ `${ result.kind }-${ result.id }` }
 												>
-													<span className="smm-link-control__result-title">
-														{ result.title }
-													</span>
-													<span className="smm-link-control__result-meta">
-														{ result.type }
-														{ result.url
-															? ` · ${ result.url }`
-															: '' }
-													</span>
-												</button>
-											</li>
-										) ) }
-									</ul>
-								) : null }
-								<p className="smm-link-control__hint">
-									{ __(
-										'Or paste any URL in the field beside Browse.',
-										'structured-mega-menu'
-									) }
-								</p>
-							</div>
-						</Popover>
-					) }
+													<button
+														type="button"
+														className="smm-link-control__result"
+														onClick={ () =>
+															applyResult(
+																result
+															)
+														}
+													>
+														<span className="smm-link-control__result-title">
+															{ result.title }
+														</span>
+														<span className="smm-link-control__result-meta">
+															{ result.type }
+															{ result.url
+																? ` · ${ result.url }`
+																: '' }
+														</span>
+													</button>
+												</li>
+											) ) }
+										</ul>
+									) : null }
+									<p className="smm-link-control__hint">
+										{ __(
+											'Or paste any URL in the field beside Browse.',
+											'structured-mega-menu'
+										) }
+									</p>
+								</div>
+							</Popover>
+						) }
+					</div>
+					{ url ? (
+						<Button variant="tertiary" onClick={ clearLink }>
+							{ __( 'Clear', 'structured-mega-menu' ) }
+						</Button>
+					) : null }
 				</div>
 			</div>
 

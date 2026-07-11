@@ -61,7 +61,7 @@ export function createItem( type ) {
 	if ( type === COLUMN_TYPES.ICON_LINKS ) {
 		return {
 			...base,
-			icon: { source: 'library', value: 'document' },
+			icon: { source: 'library', value: 'document', url: '' },
 		};
 	}
 

@@ -22,6 +22,8 @@ class Assets {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_theme_layout_vars' ), 20 );
+		add_action( 'enqueue_block_assets', array( __CLASS__, 'enqueue_theme_layout_vars' ), 20 );
 	}
 
 	/**
@@ -141,5 +143,49 @@ class Assets {
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
 			)
 		);
+	}
+
+	/**
+	 * Exposes theme.json layout.fullSize as a CSS custom property.
+	 *
+	 * Core only outputs content-size and wide-size; fullSize is a theme extension.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_theme_layout_vars() {
+		static $done = false;
+		if ( $done ) {
+			return;
+		}
+
+		$full_size = Schema::get_theme_layout_size( 'fullSize' );
+		if ( '' === $full_size ) {
+			return;
+		}
+
+		/*
+		 * Basic length safety — theme.json values are trusted theme author input,
+		 * but reject obvious injection.
+		 */
+		if ( ! preg_match( '/^[0-9.]+(px|rem|em|%|vw|vh|ch|ex|vmin|vmax)?$/i', trim( $full_size ) ) ) {
+			return;
+		}
+
+		$done = true;
+		$css  = sprintf(
+			':root{--wp--style--global--full-size:%1$s;--smm-theme-full-size:%1$s;}',
+			esc_html( $full_size )
+		);
+
+		$handle = 'structured-mega-menu-menu-item-style';
+		if ( wp_style_is( $handle, 'registered' ) ) {
+			wp_enqueue_style( $handle );
+			wp_add_inline_style( $handle, $css );
+			return;
+		}
+
+		wp_register_style( 'smm-theme-layout', false, array(), SMM_VERSION );
+		wp_enqueue_style( 'smm-theme-layout' );
+		wp_add_inline_style( 'smm-theme-layout', $css );
 	}
 }

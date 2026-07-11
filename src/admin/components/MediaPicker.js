@@ -33,10 +33,6 @@ function openMediaFrame() {
 			resolve( attachment );
 		} );
 
-		frame.on( 'close', () => {
-			// No-op; selection handler resolves when chosen.
-		} );
-
 		frame.open();
 	} );
 }
@@ -61,33 +57,41 @@ export default function MediaPicker( { imageId, imageUrl, onChange } ) {
 		} );
 	};
 
+	const clearImage = () =>
+		onChange( {
+			imageId: 0,
+			imageUrl: '',
+			imageAlt: '',
+		} );
+
 	return (
 		<div className="smm-media-picker">
-			{ imageUrl ? (
-				<div className="smm-media-picker__preview">
-					<img src={ imageUrl } alt="" />
+			<span className="smm-field-label">
+				{ __( 'Image', 'structured-mega-menu' ) }
+			</span>
+			<div className="smm-media-picker__card">
+				{ imageUrl ? (
+					<div className="smm-media-picker__preview">
+						<img src={ imageUrl } alt="" />
+					</div>
+				) : (
+					<div className="smm-media-picker__empty">
+						{ __( 'No image selected', 'structured-mega-menu' ) }
+					</div>
+				) }
+				<div className="smm-field-actions">
+					<Button variant="secondary" onClick={ selectImage }>
+						{ imageId
+							? __( 'Replace image', 'structured-mega-menu' )
+							: __( 'Select image', 'structured-mega-menu' ) }
+					</Button>
+					{ !! imageId && (
+						<Button variant="tertiary" onClick={ clearImage }>
+							{ __( 'Remove', 'structured-mega-menu' ) }
+						</Button>
+					) }
 				</div>
-			) : null }
-			<Button variant="secondary" onClick={ selectImage }>
-				{ imageId
-					? __( 'Replace image', 'structured-mega-menu' )
-					: __( 'Select image', 'structured-mega-menu' ) }
-			</Button>
-			{ !! imageId && (
-				<Button
-					variant="link"
-					isDestructive
-					onClick={ () =>
-						onChange( {
-							imageId: 0,
-							imageUrl: '',
-							imageAlt: '',
-						} )
-					}
-				>
-					{ __( 'Remove image', 'structured-mega-menu' ) }
-				</Button>
-			) }
+			</div>
 		</div>
 	);
 }

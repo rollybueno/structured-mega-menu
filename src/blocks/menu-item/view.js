@@ -74,6 +74,22 @@ function getWideWidthPx() {
 }
 
 /**
+ * Theme full width in pixels (theme.json layout.fullSize when present).
+ *
+ * @return {number} Full width.
+ */
+function getFullWidthPx() {
+	const root = getComputedStyle( document.documentElement );
+	const fromCore = root.getPropertyValue( '--wp--style--global--full-size' ).trim();
+	const fromPlugin = root.getPropertyValue( '--smm-theme-full-size' ).trim();
+	return (
+		cssLengthToPx( fromCore ) ||
+		cssLengthToPx( fromPlugin ) ||
+		getThemeSizePx( '--wp--style--global--wide-size', '100rem' )
+	);
+}
+
+/**
  * Whether this item is inside an open Navigation overlay.
  *
  * @param {Element|null} ref Menu item element.
@@ -132,7 +148,7 @@ function positionCenteredPanel( panel, targetWidth, top ) {
 }
 
 /**
- * Positions content/wide/viewport panels below the trigger and on-screen.
+ * Positions content/wide/full/viewport panels below the trigger and on-screen.
  *
  * @param {Element|null} ref Menu item element.
  * @param {object}       context Interactivity context.
@@ -174,6 +190,11 @@ function applyPanelPosition( ref, context ) {
 
 	if ( mode === 'wide' ) {
 		positionCenteredPanel( panel, getWideWidthPx(), top );
+		return;
+	}
+
+	if ( mode === 'full' ) {
+		positionCenteredPanel( panel, getFullWidthPx(), top );
 		return;
 	}
 

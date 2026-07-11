@@ -93,12 +93,13 @@
 }
 
 /*
- * Content, wide, and viewport modes use position:fixed; top/left/width are set
+ * Content, wide, full, and viewport modes use position:fixed; top/left/width are set
  * by the Interactivity store so the panel sits below the trigger and aligns to
- * the theme content/wide column or full viewport — never over the header.
+ * the theme content/wide/full column or full viewport — never over the header.
  */
 .smm-menu-item.smm-panel-width-content .smm-menu-item__panel,
 .smm-menu-item.smm-panel-width-wide .smm-menu-item__panel,
+.smm-menu-item.smm-panel-width-full .smm-menu-item__panel,
 .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
 	position: fixed;
 	inset-block-start: var(--smm-panel-top, auto);
@@ -112,6 +113,7 @@
 /* Invisible hit area so pointer can travel from trigger into the fixed panel. */
 .smm-menu-item.smm-panel-width-content .smm-menu-item__panel::before,
 .smm-menu-item.smm-panel-width-wide .smm-menu-item__panel::before,
+.smm-menu-item.smm-panel-width-full .smm-menu-item__panel::before,
 .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel::before {
 	content: '';
 	position: absolute;
@@ -128,8 +130,16 @@
 	inline-size: min(100vw - 2rem, var(--wp--style--global--wide-size, 80rem));
 }
 
+.smm-menu-item.smm-panel-width-full .smm-menu-item__panel {
+	inline-size: min(
+		100vw - 2rem,
+		var(--wp--style--global--full-size, var(--smm-theme-full-size, 100rem))
+	);
+}
+
 .smm-menu-item.smm-panel-width-content .smm-menu-item__panel-inner,
-.smm-menu-item.smm-panel-width-wide .smm-menu-item__panel-inner {
+.smm-menu-item.smm-panel-width-wide .smm-menu-item__panel-inner,
+.smm-menu-item.smm-panel-width-full .smm-menu-item__panel-inner {
 	inline-size: 100%;
 	max-inline-size: 100%;
 }
@@ -410,6 +420,7 @@
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-content .smm-menu-item__panel,
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-wide .smm-menu-item__panel,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-full .smm-menu-item__panel,
 .wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
 	position: static;
 	inset: auto;
@@ -453,6 +464,7 @@
 	}
 
 	.smm-menu-item.smm-panel-width-wide .smm-menu-item__panel,
+	.smm-menu-item.smm-panel-width-full .smm-menu-item__panel,
 	.smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
 		position: static;
 	}

@@ -49,7 +49,51 @@ class Schema {
 	 * @return string[]
 	 */
 	public static function get_panel_widths() {
-		return array( 'navigation', 'content', 'wide', 'viewport' );
+		return array( 'navigation', 'content', 'wide', 'full', 'viewport' );
+	}
+
+	/**
+	 * Reads a theme.json layout size (contentSize, wideSize, fullSize, …).
+	 *
+	 * Core only emits CSS vars for content/wide. Themes may still declare
+	 * fullSize; this helper resolves it from global settings or theme.json.
+	 *
+	 * @param string $key Layout size key (e.g. fullSize).
+	 * @return string CSS length or empty string.
+	 */
+	public static function get_theme_layout_size( $key ) {
+		$key = is_string( $key ) ? $key : '';
+		if ( ! preg_match( '/^[a-zA-Z][a-zA-Z0-9]*$/', $key ) ) {
+			return '';
+		}
+
+		$layout = wp_get_global_settings( array( 'layout' ) );
+		if ( is_array( $layout ) && ! empty( $layout[ $key ] ) && is_string( $layout[ $key ] ) ) {
+			return $layout[ $key ];
+		}
+
+		foreach ( array( get_stylesheet_directory(), get_template_directory() ) as $dir ) {
+			$path = trailingslashit( $dir ) . 'theme.json';
+			if ( ! is_readable( $path ) ) {
+				continue;
+			}
+
+			$raw  = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local theme.json only.
+			$data = json_decode( is_string( $raw ) ? $raw : '', true );
+			if ( ! is_array( $data ) ) {
+				continue;
+			}
+
+			$theme_layout = isset( $data['settings']['layout'] ) && is_array( $data['settings']['layout'] )
+				? $data['settings']['layout']
+				: array();
+
+			if ( ! empty( $theme_layout[ $key ] ) && is_string( $theme_layout[ $key ] ) ) {
+				return $theme_layout[ $key ];
+			}
+		}
+
+		return '';
 	}
 
 	/**
