@@ -47,10 +47,20 @@ npm run build
 
 | Command | Description |
 | --- | --- |
-| `npm run test:unit` | JavaScript unit tests |
-| `npm run test:e2e` | Playwright end-to-end tests |
+| `npm run test:unit` | JavaScript unit tests (Jest) |
+| `npm run test:e2e` | Playwright end-to-end tests (`SMM_BASE_URL` required) |
 | `composer test` / `vendor/bin/phpunit` | PHPUnit |
 | `vendor/bin/phpcs` | PHP Coding Standards |
+
+Translations are handled by WordPress.org language packs. This plugin does not ship a `/languages` folder or call `load_plugin_textdomain()`.
+
+## Phase status
+
+* **Phase 1 (complete):** bootstrap, CPT, capabilities, meta, schema/sanitizer/migrations, column registry, build tooling
+* **Phase 2 (complete):** Admin flexible editor (list, columns, repeaters, validation, save, undo)
+* **Phase 3 (complete):** Navigation menu-item block editor UX (selector, preview, create/edit shortcuts)
+* **Phase 4 (complete):** Frontend renderer + Interactivity API + responsive CSS
+* **Phase 5 (complete):** PHPUnit, Jest, Playwright smoke tests, distribution polish
 
 ## Data model
 
@@ -114,11 +124,3 @@ Follows WordPress admin/editor support targets. Frontend uses modern CSS (grid, 
 * No raw SVG / custom CSS / custom JS fields
 * No WooCommerce-specific integrations
 * No analytics or remote services
-
-## Phase status
-
-* **Phase 1 (complete):** bootstrap, CPT, capabilities, meta, schema/sanitizer/migrations, column registry, build tooling
-* **Phase 2 (complete):** Admin flexible editor (list, columns, repeaters, validation, save, undo)
-* **Phase 3 (complete):** Navigation menu-item block editor UX (selector, preview, create/edit shortcuts)
-* **Phase 4 (complete):** Frontend renderer + Interactivity API + responsive CSS
-* **Phase 5:** Full test suite and .org polish

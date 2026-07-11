@@ -9,6 +9,7 @@
 /tests/playwright/.auth/
 /playwright-report/
 /test-results/
+/*.zip
 
 # Editor
 .idea/

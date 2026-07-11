@@ -14,9 +14,11 @@
 		"packages-update": "wp-scripts packages-update",
 		"test:unit": "wp-scripts test-unit-js",
 		"test:e2e": "wp-scripts test-playwright",
+		"test:php": "phpunit",
 		"plugin-zip": "wp-scripts plugin-zip"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.56.1",
 		"@wordpress/scripts": "^30.15.0",
 		"copy-webpack-plugin": "^11.0.0",
 		"typescript": "^5.4.5"

@@ -62,12 +62,6 @@ class Plugin {
 	 * @return void
 	 */
 	public function init() {
-		load_plugin_textdomain(
-			'structured-mega-menu',
-			false,
-			dirname( SMM_PLUGIN_BASENAME ) . '/languages'
-		);
-
 		$this->column_registry = new Column_Types\Column_Registry();
 		$this->column_registry->register_defaults();
 

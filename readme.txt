@@ -73,7 +73,7 @@ Not in version 1. The maximum is four columns.
 == Changelog ==
 
 = 1.0.0 =
-* Initial release foundation.
+* Initial release: mega menu configurations, Navigation block item, Interactivity frontend, admin editor, and test suite.
 
 == Upgrade Notice ==
 
