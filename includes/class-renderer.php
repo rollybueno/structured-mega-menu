@@ -54,6 +54,9 @@ class Renderer {
 		$grid_template = Schema::layout_to_grid_template(
 			isset( $settings['layoutPreset'] ) ? $settings['layoutPreset'] : '1'
 		);
+		$column_count  = count( $enabled_columns );
+		/* Rough min width so multi-column panels are not crushed to the trigger width. */
+		$panel_min_rem = max( 18, min( 56, 14 * max( 1, $column_count ) ) );
 
 		$panel_width   = isset( $settings['panelWidth'] ) ? sanitize_key( $settings['panelWidth'] ) : 'navigation';
 		$opening_mode  = isset( $settings['openingMode'] ) ? sanitize_key( $settings['openingMode'] ) : 'click';
@@ -177,10 +180,13 @@ class Renderer {
 				class="smm-menu-item__panel"
 				hidden
 				data-wp-bind--hidden="!context.isOpen"
-				style="<?php echo esc_attr( '--smm-grid-template: ' . $grid_template . ';' ); ?>"
+				style="<?php echo esc_attr( '--smm-panel-min-width: ' . $panel_min_rem . 'rem;' ); ?>"
 			>
 				<div class="smm-menu-item__panel-inner">
-					<div class="smm-menu-item__grid">
+					<div
+						class="smm-menu-item__grid smm-menu-item__grid--cols-<?php echo esc_attr( (string) $column_count ); ?>"
+						style="<?php echo esc_attr( 'grid-template-columns: ' . $grid_template . ';' ); ?>"
+					>
 						<?php echo $panel_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Column renderers escape. ?>
 					</div>
 				</div>

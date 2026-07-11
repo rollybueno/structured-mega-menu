@@ -1,10 +1,17 @@
 /**
  * Frontend styles for Structured Mega Menu.
+ *
+ * Core Navigation sets `.wp-block-navigation-item { display: flex }` (row).
+ * The mega panel must stay `position: absolute` in the desktop bar so it is
+ * taken out of that flex flow. Only the open overlay menu uses static/column.
  */
 
 .smm-menu-item {
 	position: relative;
 	list-style: none;
+	/* Keep trigger + panel as a column when panel is in-flow (overlay). */
+	flex-direction: column;
+	align-items: flex-start;
 }
 
 .smm-menu-item__toggle,
@@ -61,6 +68,7 @@
 	inset-inline-start: 0;
 	z-index: 100;
 	min-width: min(100%, 16rem);
+	max-inline-size: calc(100vw - 2rem);
 	padding-block-start: 0.5rem;
 }
 
@@ -79,20 +87,9 @@
 	max-inline-size: 100%;
 }
 
-/* Core Navigation overlay: avoid absolute desktop positioning */
-.wp-block-navigation__responsive-dialog .smm-menu-item__panel,
-.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__panel {
-	position: static;
-	inset: auto;
-	inline-size: 100%;
-	max-inline-size: 100%;
-	padding-block-start: 0.5rem;
-	box-shadow: none;
-}
-
-/* Width modes */
+/* Width modes (desktop dropdown) */
 .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel {
-	inline-size: max(100%, 18rem);
+	inline-size: min(100vw - 2rem, var(--smm-panel-min-width, 42rem));
 }
 
 .smm-menu-item.smm-panel-width-content .smm-menu-item__panel-inner {
@@ -115,22 +112,28 @@
 	border-inline: 0;
 }
 
+/*
+ * Right/end-justified Navigation: open the panel toward the start of the
+ * viewport so a wide mega menu is not clipped off the right edge.
+ */
+.wp-block-navigation.items-justified-right .smm-menu-item__panel,
+.wp-block-navigation.items-justified-end .smm-menu-item__panel,
+.wp-block-navigation.is-content-justification-right .smm-menu-item__panel,
+.wp-block-navigation.is-content-justification-end .smm-menu-item__panel,
+.wp-block-navigation.items-justified-right .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
+.wp-block-navigation.items-justified-end .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
+.wp-block-navigation.is-content-justification-right .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
+.wp-block-navigation.is-content-justification-end .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel {
+	inset-inline-start: auto;
+	inset-inline-end: 0;
+}
+
 .smm-menu-item__grid {
 	display: grid;
-	grid-template-columns: var(--smm-grid-template, minmax(0, 1fr));
+	grid-template-columns: minmax(0, 1fr);
 	gap: var(--smm-grid-gap, clamp(0.75rem, 2vw, 1.5rem));
 	min-width: 0;
-}
-
-.wp-block-navigation__responsive-dialog .smm-menu-item__grid,
-.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__grid {
-	grid-template-columns: minmax(0, 1fr) !important;
-}
-
-.wp-block-navigation__responsive-dialog .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel-inner,
-.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel-inner {
-	border-radius: var(--smm-panel-radius, 0.25rem);
-	border: 1px solid var(--smm-panel-border, color-mix(in srgb, currentcolor 16%, transparent));
+	width: 100%;
 }
 
 .smm-column {
@@ -227,6 +230,11 @@
 	text-decoration: none;
 }
 
+.smm-link-list--with_descriptions .smm-link-list__link {
+	flex-direction: column;
+	gap: 0.15rem;
+}
+
 .smm-icon-pos-above .smm-icon-links__link {
 	flex-direction: column;
 }
@@ -263,10 +271,53 @@
 	display: none;
 }
 
-/* Responsive: intermediate widths */
+/*
+ * Overlay / modal Navigation (hamburger open).
+ * Do NOT target `.wp-block-navigation__responsive-dialog` alone — that
+ * wrapper exists on desktop too and would yank the panel into the flex row.
+ */
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item {
+	inline-size: 100%;
+	max-inline-size: 100%;
+	align-items: stretch;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__panel {
+	position: static;
+	inset: auto;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	min-width: 0;
+	padding-block-start: 0.5rem;
+	box-shadow: none;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-content .smm-menu-item__panel,
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
+	position: static;
+	inset: auto;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	padding-inline: 0;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item__panel-inner {
+	inline-size: 100%;
+	max-inline-size: 100%;
+	box-shadow: none;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel-inner {
+	border-radius: var(--smm-panel-radius, 0.25rem);
+	border: 1px solid var(--smm-panel-border, color-mix(in srgb, currentcolor 16%, transparent));
+}
+
+/* Responsive: intermediate widths — override inline template */
 @media (max-width: 781px) {
 
-	.smm-menu-item__grid {
+	.smm-menu-item__grid--cols-3,
+	.smm-menu-item__grid--cols-4 {
 		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 	}
 
@@ -275,7 +326,7 @@
 	}
 }
 
-/* Mobile / overlay-friendly stacking */
+/* Mobile stacking */
 @media (max-width: 600px) {
 
 	.smm-menu-item__panel {
@@ -307,25 +358,26 @@
 	}
 }
 
-/* Container query enhancement when supported */
+/*
+ * Collapse only when the panel is actually narrow.
+ * Thresholds stay below the default multi-column min width (~42rem for 3 cols).
+ */
 @supports (container-type: inline-size) {
 
-	.wp-block-navigation {
+	.smm-menu-item__panel {
 		container-type: inline-size;
+		container-name: smm-panel;
 	}
 
-	@container (max-width: 40rem) {
+	@container smm-panel (max-width: 40rem) {
 
-		.smm-menu-item__grid {
+		.smm-menu-item__grid--cols-3,
+		.smm-menu-item__grid--cols-4 {
 			grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 		}
 	}
 
-	@container (max-width: 28rem) {
-
-		.smm-menu-item__panel {
-			position: static;
-		}
+	@container smm-panel (max-width: 24rem) {
 
 		.smm-menu-item__grid {
 			grid-template-columns: minmax(0, 1fr) !important;
