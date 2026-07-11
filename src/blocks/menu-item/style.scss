@@ -141,64 +141,70 @@
 }
 
 /*
- * Viewport panels: stretch columns so Image CTA media fills the row height
- * to match taller sibling columns.
+ * Viewport panels: Image CTA fills the row height set by sibling columns.
+ * Absolute positioning removes the image’s intrinsic size from grid sizing
+ * so a tall/wide upload cannot blow up the mega menu height.
  */
 .smm-menu-item.smm-panel-width-viewport .smm-menu-item__grid {
 	align-items: stretch;
 }
 
 .smm-menu-item.smm-panel-width-viewport .smm-column--image_cta {
-	display: flex;
-	flex-direction: column;
-	min-height: 100%;
+	position: relative;
+	min-height: 0;
+	overflow: hidden;
 }
 
-.smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta__card-link,
 .smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta {
+	position: absolute;
+	inset: 0;
 	display: flex;
-	flex: 1 1 auto;
 	flex-direction: column;
-	min-height: 100%;
+	width: 100%;
 	height: 100%;
+	min-height: 0;
 }
 
 .smm-menu-item.smm-panel-width-viewport .smm-image-cta {
 	display: flex;
-	flex: 1 1 auto;
 	flex-direction: column;
-	min-height: 100%;
+	width: 100%;
 	height: 100%;
+	min-height: 0;
 }
 
 .smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__body {
 	flex: 0 0 auto;
 }
 
-.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media {
-	flex: 1 1 auto;
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media,
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
+	position: relative;
+	flex: 1 1 0;
 	min-height: 0;
+	height: auto;
+	overflow: hidden;
 }
 
-.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__img,
-.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__img {
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta__img,
+.smm-menu-item.smm-panel-width-viewport .smm-aspect-landscape .smm-image-cta__img,
+.smm-menu-item.smm-panel-width-viewport .smm-aspect-square .smm-image-cta__img,
+.smm-menu-item.smm-panel-width-viewport .smm-aspect-portrait .smm-image-cta__img,
+.smm-menu-item.smm-panel-width-viewport .smm-aspect-original .smm-image-cta__img {
+	position: absolute;
+	inset: 0;
 	width: 100%;
 	height: 100%;
-	aspect-ratio: auto;
+	max-width: 100%;
+	max-height: 100%;
 	object-fit: cover;
+	aspect-ratio: unset;
 }
 
 .smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
 	align-items: stretch;
-	flex: 1 1 auto;
-	min-height: 100%;
-	height: 100%;
-}
-
-.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
-	min-height: 100%;
 	height: 100%;
 }
 
@@ -248,28 +254,6 @@
 }
 
 /* Image CTA */
-.smm-image-cta__card-link {
-	display: block;
-	height: 100%;
-	text-decoration: none !important;
-	color: inherit;
-}
-
-.smm-image-cta__card-link:hover,
-.smm-image-cta__card-link:focus,
-.smm-image-cta__card-link:focus-visible,
-.smm-image-cta__card-link:hover .smm-column__eyebrow,
-.smm-image-cta__card-link:hover .smm-column__heading,
-.smm-image-cta__card-link:hover .smm-column__description,
-.smm-image-cta__card-link:focus-visible .smm-column__eyebrow,
-.smm-image-cta__card-link:focus-visible .smm-column__heading,
-.smm-image-cta__card-link:focus-visible .smm-column__description,
-.smm-image-cta__card-link .smm-column__eyebrow,
-.smm-image-cta__card-link .smm-column__heading,
-.smm-image-cta__card-link .smm-column__description {
-	text-decoration: none !important;
-}
-
 .smm-image-cta--image_beside {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
@@ -327,11 +311,6 @@ a.smm-column__cta--button:hover,
 a.smm-column__cta--button:focus-visible {
 	text-decoration: none !important;
 	filter: brightness(1.08);
-}
-
-/* Card-wrapped CTA is decorative; keep button look without pointer quirks. */
-span.smm-column__cta--button {
-	pointer-events: none;
 }
 
 /* Icon links */

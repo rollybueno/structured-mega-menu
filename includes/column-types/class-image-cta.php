@@ -73,7 +73,7 @@ class Image_Cta implements Column_Type {
 			'url'              => '',
 			'opensInNewTab'    => false,
 			'layout'           => 'image_above',
-			'cardClickable'    => true,
+			'cardClickable'    => false,
 		);
 	}
 
@@ -118,7 +118,7 @@ class Image_Cta implements Column_Type {
 			'url'              => Helpers::sanitize_url( isset( $data['url'] ) ? $data['url'] : '' ),
 			'opensInNewTab'    => Helpers::to_bool( isset( $data['opensInNewTab'] ) ? $data['opensInNewTab'] : false ),
 			'layout'           => $layout,
-			'cardClickable'    => Helpers::to_bool( isset( $data['cardClickable'] ) ? $data['cardClickable'] : true ),
+			'cardClickable'    => Helpers::to_bool( isset( $data['cardClickable'] ) ? $data['cardClickable'] : false ),
 		);
 	}
 
@@ -144,12 +144,11 @@ class Image_Cta implements Column_Type {
 	public function render( array $data, array $context = array() ): string {
 		unset( $context );
 
-		$layout         = isset( $data['layout'] ) ? $data['layout'] : 'image_above';
-		$card_clickable = ! empty( $data['cardClickable'] );
-		$url            = isset( $data['url'] ) ? $data['url'] : '';
-		$cta_label      = isset( $data['ctaLabel'] ) ? $data['ctaLabel'] : '';
-		$has_link       = is_string( $url ) && '' !== $url;
-		$opens_in_new   = ! empty( $data['opensInNewTab'] );
+		$layout       = isset( $data['layout'] ) ? $data['layout'] : 'image_above';
+		$url          = isset( $data['url'] ) ? $data['url'] : '';
+		$cta_label    = isset( $data['ctaLabel'] ) ? $data['ctaLabel'] : '';
+		$has_link     = is_string( $url ) && '' !== $url;
+		$opens_in_new = ! empty( $data['opensInNewTab'] );
 
 		$image_html = $this->render_image( $data );
 		$body       = '';
@@ -158,39 +157,19 @@ class Image_Cta implements Column_Type {
 		$body      .= Markup::description( isset( $data['description'] ) ? $data['description'] : '' );
 
 		if ( $has_link && '' !== $cta_label ) {
-			$cta_classes = 'smm-column__cta smm-column__cta--button wp-element-button';
-			if ( $card_clickable ) {
-				$body .= sprintf(
-					'<span class="%1$s" aria-hidden="true">%2$s</span>',
-					esc_attr( $cta_classes ),
-					esc_html( $cta_label )
-				);
-			} else {
-				$body .= sprintf(
-					'<a class="%1$s" %2$s>%3$s</a>',
-					esc_attr( $cta_classes ),
-					Markup::link_attributes( $url, $opens_in_new ),
-					esc_html( $cta_label )
-				);
-			}
+			$body .= sprintf(
+				'<a class="smm-column__cta smm-column__cta--button wp-element-button" %1$s>%2$s</a>',
+				Markup::link_attributes( $url, $opens_in_new ),
+				esc_html( $cta_label )
+			);
 		}
 
-		$inner = sprintf(
+		return sprintf(
 			'<div class="smm-image-cta smm-image-cta--%1$s">%2$s<div class="smm-image-cta__body">%3$s</div></div>',
 			esc_attr( $layout ),
 			$image_html,
 			$body
 		);
-
-		if ( $card_clickable && $has_link ) {
-			return sprintf(
-				'<a class="smm-image-cta__card-link" %1$s>%2$s</a>',
-				Markup::link_attributes( $url, $opens_in_new ),
-				$inner
-			);
-		}
-
-		return $inner;
 	}
 
 	/**

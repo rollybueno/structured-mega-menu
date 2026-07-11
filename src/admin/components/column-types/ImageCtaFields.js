@@ -7,7 +7,6 @@ import {
 	TextControl,
 	TextareaControl,
 	SelectControl,
-	ToggleControl,
 } from '@wordpress/components';
 import MediaPicker from '../MediaPicker';
 import LinkPicker from '../LinkPicker';
@@ -168,23 +167,6 @@ export default function ImageCtaFields( { settings, columnId, onChange } ) {
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize
 					/>
-					<div className="smm-fields-grid__full">
-						<ToggleControl
-							label={ __(
-								'Make entire card clickable',
-								'structured-mega-menu'
-							) }
-							checked={ settings.cardClickable !== false }
-							onChange={ ( cardClickable ) =>
-								update( { cardClickable } )
-							}
-							help={ __(
-								'When enabled, the card uses one link and the button label is shown as text.',
-								'structured-mega-menu'
-							) }
-							__nextHasNoMarginBottom
-						/>
-					</div>
 				</div>
 			</div>
 		</div>

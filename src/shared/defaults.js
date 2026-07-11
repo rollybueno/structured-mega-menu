@@ -48,7 +48,7 @@ export function getColumnDefaults( type ) {
 				url: '',
 				opensInNewTab: false,
 				layout: 'image_above',
-				cardClickable: true,
+				cardClickable: false,
 			};
 		case 'icon_links':
 			return {
