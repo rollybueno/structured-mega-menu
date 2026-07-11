@@ -1,0 +1,1 @@
+.smm-menu-item{position:relative}.smm-menu-item__panel{box-sizing:border-box}.smm-menu-item__grid{display:grid;grid-template-columns:var(--smm-grid-template,minmax(0,1fr));min-width:0}@media(prefers-reduced-motion:reduce){.smm-menu-item *{animation:none!important;transition:none!important}}

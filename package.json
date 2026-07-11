@@ -1,0 +1,27 @@
+{
+	"name": "structured-mega-menu",
+	"version": "1.0.0",
+	"description": "Create responsive mega menus with structured columns for the WordPress Navigation block.",
+	"author": "Structured Mega Menu Contributors",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"start": "wp-scripts start",
+		"build": "wp-scripts build",
+		"lint:js": "wp-scripts lint-js",
+		"lint:css": "wp-scripts lint-style",
+		"format": "wp-scripts format",
+		"packages-update": "wp-scripts packages-update",
+		"test:unit": "wp-scripts test-unit-js",
+		"test:e2e": "wp-scripts test-playwright",
+		"plugin-zip": "wp-scripts plugin-zip"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.15.0",
+		"copy-webpack-plugin": "^11.0.0",
+		"typescript": "^5.4.5"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "structured-mega-menu/menu-item",
+  "version": "1.0.0",
+  "title": "Mega Menu Item",
+  "category": "theme",
+  "icon": "menu-alt3",
+  "description": "A Navigation item that opens a Structured Mega Menu configuration.",
+  "keywords": [
+    "mega menu",
+    "navigation",
+    "menu"
+  ],
+  "textdomain": "structured-mega-menu",
+  "parent": [
+    "core/navigation"
+  ],
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "megaMenuId": {
+      "type": "number",
+      "default": 0
+    },
+    "triggerType": {
+      "type": "string",
+      "default": "button"
+    },
+    "url": {
+      "type": "string",
+      "default": ""
+    },
+    "opensInNewTab": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "interactivity": true,
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalTextTransform": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true
+    },
+    "color": {
+      "text": true,
+      "background": false,
+      "link": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}
