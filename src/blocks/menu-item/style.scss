@@ -92,17 +92,45 @@
 	inline-size: min(100vw - 2rem, var(--smm-panel-min-width, 42rem));
 }
 
-.smm-menu-item.smm-panel-width-content .smm-menu-item__panel-inner {
+/*
+ * Content + viewport modes use position:fixed; top/left/width are set by
+ * the Interactivity store so the panel sits below the trigger and aligns
+ * to the theme content column or full viewport — never over the header.
+ */
+.smm-menu-item.smm-panel-width-content .smm-menu-item__panel,
+.smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
+	position: fixed;
+	inset-block-start: var(--smm-panel-top, auto);
+	inset-inline-start: auto;
+	inset-inline-end: auto;
+	z-index: 100000;
+	max-inline-size: none;
+	padding-block-start: 0;
+}
+
+/* Invisible hit area so pointer can travel from trigger into the fixed panel. */
+.smm-menu-item.smm-panel-width-content .smm-menu-item__panel::before,
+.smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel::before {
+	content: '';
+	position: absolute;
+	inset-inline: 0;
+	inset-block-end: 100%;
+	block-size: 0.75rem;
+}
+
+.smm-menu-item.smm-panel-width-content .smm-menu-item__panel {
 	inline-size: min(100vw - 2rem, var(--wp--style--global--content-size, 40rem));
 }
 
-.smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
-	position: fixed;
-	inset-inline: 0;
-	inset-block-start: auto;
+.smm-menu-item.smm-panel-width-content .smm-menu-item__panel-inner {
 	inline-size: 100%;
 	max-inline-size: 100%;
-	padding-inline: 0;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel {
+	inset-inline: 0;
+	inline-size: 100%;
+	max-inline-size: 100%;
 }
 
 .smm-menu-item.smm-panel-width-viewport .smm-menu-item__panel-inner {
@@ -113,13 +141,71 @@
 }
 
 /*
- * Right/end-justified Navigation: open the panel toward the start of the
- * viewport so a wide mega menu is not clipped off the right edge.
+ * Viewport panels: stretch columns so Image CTA media fills the row height
+ * to match taller sibling columns.
  */
-.wp-block-navigation.items-justified-right .smm-menu-item__panel,
-.wp-block-navigation.items-justified-end .smm-menu-item__panel,
-.wp-block-navigation.is-content-justification-right .smm-menu-item__panel,
-.wp-block-navigation.is-content-justification-end .smm-menu-item__panel,
+.smm-menu-item.smm-panel-width-viewport .smm-menu-item__grid {
+	align-items: stretch;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-column--image_cta {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta__card-link,
+.smm-menu-item.smm-panel-width-viewport .smm-column--image_cta > .smm-image-cta {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 100%;
+	height: 100%;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 100%;
+	height: 100%;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__body {
+	flex: 0 0 auto;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__media {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_above .smm-image-cta__img,
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__img {
+	width: 100%;
+	height: 100%;
+	aspect-ratio: auto;
+	object-fit: cover;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+	align-items: stretch;
+	flex: 1 1 auto;
+	min-height: 100%;
+	height: 100%;
+}
+
+.smm-menu-item.smm-panel-width-viewport .smm-image-cta--image_beside .smm-image-cta__media {
+	min-height: 100%;
+	height: 100%;
+}
+
+/*
+ * Right/end-justified Navigation: open navigation-width panels toward the
+ * start of the viewport so they are not clipped off the right edge.
+ */
 .wp-block-navigation.items-justified-right .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
 .wp-block-navigation.items-justified-end .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
 .wp-block-navigation.is-content-justification-right .smm-menu-item.smm-panel-width-navigation .smm-menu-item__panel,
@@ -164,8 +250,24 @@
 /* Image CTA */
 .smm-image-cta__card-link {
 	display: block;
-	text-decoration: none;
+	height: 100%;
+	text-decoration: none !important;
 	color: inherit;
+}
+
+.smm-image-cta__card-link:hover,
+.smm-image-cta__card-link:focus,
+.smm-image-cta__card-link:focus-visible,
+.smm-image-cta__card-link:hover .smm-column__eyebrow,
+.smm-image-cta__card-link:hover .smm-column__heading,
+.smm-image-cta__card-link:hover .smm-column__description,
+.smm-image-cta__card-link:focus-visible .smm-column__eyebrow,
+.smm-image-cta__card-link:focus-visible .smm-column__heading,
+.smm-image-cta__card-link:focus-visible .smm-column__description,
+.smm-image-cta__card-link .smm-column__eyebrow,
+.smm-image-cta__card-link .smm-column__heading,
+.smm-image-cta__card-link .smm-column__description {
+	text-decoration: none !important;
 }
 
 .smm-image-cta--image_beside {
@@ -203,13 +305,33 @@
 
 .smm-column__cta {
 	display: inline-block;
-	margin-block-start: 0.35rem;
-	font-weight: 600;
-	text-decoration: underline;
+	margin-block-start: 0.75rem;
 }
 
-.smm-column__cta--text {
-	text-decoration: underline;
+.smm-column__cta--button {
+	box-sizing: border-box;
+	padding: 0.55em 1.1em;
+	border-radius: var(--smm-cta-radius, var(--wp--preset--spacing--20, 0.25rem));
+	font-weight: 600;
+	font-size: 0.9em;
+	line-height: 1.25;
+	text-decoration: none !important;
+	text-align: center;
+	color: var(--smm-cta-color, var(--wp--preset--color--base, #fff));
+	background: var(--smm-cta-bg, var(--wp--preset--color--contrast, #1e1e1e));
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+
+a.smm-column__cta--button:hover,
+a.smm-column__cta--button:focus-visible {
+	text-decoration: none !important;
+	filter: brightness(1.08);
+}
+
+/* Card-wrapped CTA is decorative; keep button look without pointer quirks. */
+span.smm-column__cta--button {
+	pointer-events: none;
 }
 
 /* Icon links */
@@ -228,6 +350,17 @@
 	gap: 0.65rem;
 	align-items: flex-start;
 	text-decoration: none;
+}
+
+.smm-link-list__link:hover,
+.smm-link-list__link:focus,
+.smm-link-list__link:focus-visible {
+	text-decoration: none;
+}
+
+.smm-link-list__link:hover .smm-link-list__label,
+.smm-link-list__link:focus-visible .smm-link-list__label {
+	text-decoration: underline;
 }
 
 .smm-link-list--with_descriptions .smm-link-list__link {
@@ -265,6 +398,7 @@
 	margin: 0.15rem 0 0;
 	font-size: 0.85em;
 	opacity: 0.85;
+	text-decoration: none !important;
 }
 
 .smm-icon-links--compact .smm-icon-links__item-description {

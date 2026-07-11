@@ -105,6 +105,7 @@ class Renderer {
 				'panelId'             => $panel_id,
 				'isOpen'              => false,
 				'openingMode'         => $opening_mode,
+				'panelWidth'          => $panel_width,
 				'closeOnOutsideClick' => $close_outside,
 				'closeOnEscape'       => $close_escape,
 				'menuId'              => $menu_id,
@@ -121,14 +122,17 @@ class Renderer {
 			<?php echo $interactivity; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_interactivity_data_wp_context() escapes. ?>
 			data-wp-class--is-open="context.isOpen"
 			data-wp-watch="callbacks.syncOpenState"
+			data-wp-watch--position-panel="callbacks.positionPanel"
 			data-wp-on--focusout="actions.handleFocusOut"
 			data-wp-on--keydown="actions.handleKeydown"
+			data-wp-on--mouseleave="actions.handleMouseLeave"
+			data-wp-on-window--resize="actions.handleReposition"
+			data-wp-on-window--scroll="actions.handleReposition"
 			<?php if ( 'hover' === $opening_mode ) : ?>
 				data-wp-on--mouseenter="actions.handleMouseEnter"
-				data-wp-on--mouseleave="actions.handleMouseLeave"
 			<?php endif; ?>
 			<?php if ( $close_outside ) : ?>
-				data-wp-on-window--click="actions.handleOutsideClick"
+				data-wp-on-window--pointerdown="actions.handleOutsideClick"
 			<?php endif; ?>
 		>
 			<?php if ( $use_link_trigger ) : ?>

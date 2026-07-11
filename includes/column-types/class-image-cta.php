@@ -158,14 +158,17 @@ class Image_Cta implements Column_Type {
 		$body      .= Markup::description( isset( $data['description'] ) ? $data['description'] : '' );
 
 		if ( $has_link && '' !== $cta_label ) {
+			$cta_classes = 'smm-column__cta smm-column__cta--button wp-element-button';
 			if ( $card_clickable ) {
 				$body .= sprintf(
-					'<span class="smm-column__cta smm-column__cta--text">%s</span>',
+					'<span class="%1$s" aria-hidden="true">%2$s</span>',
+					esc_attr( $cta_classes ),
 					esc_html( $cta_label )
 				);
 			} else {
 				$body .= sprintf(
-					'<a class="smm-column__cta" %1$s>%2$s</a>',
+					'<a class="%1$s" %2$s>%3$s</a>',
+					esc_attr( $cta_classes ),
 					Markup::link_attributes( $url, $opens_in_new ),
 					esc_html( $cta_label )
 				);
