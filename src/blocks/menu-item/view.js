@@ -43,23 +43,34 @@ function cssLengthToPx( value ) {
 }
 
 /**
+ * Theme layout width in pixels from a CSS custom property.
+ *
+ * @param {string} property CSS variable name.
+ * @param {string} fallback Fallback length when unset.
+ * @return {number} Width in pixels.
+ */
+function getThemeSizePx( property, fallback ) {
+	const root = getComputedStyle( document.documentElement );
+	const raw = root.getPropertyValue( property ).trim() || fallback;
+	return cssLengthToPx( raw ) || cssLengthToPx( fallback ) || 640;
+}
+
+/**
  * Theme content width in pixels.
  *
  * @return {number} Content width.
  */
 function getContentWidthPx() {
-	const root = getComputedStyle( document.documentElement );
-	const content =
-		root.getPropertyValue( '--wp--style--global--content-size' ).trim() ||
-		'40rem';
-	const wide = root
-		.getPropertyValue( '--wp--style--global--wide-size' )
-		.trim();
+	return getThemeSizePx( '--wp--style--global--content-size', '40rem' );
+}
 
-	const contentPx = cssLengthToPx( content ) || 640;
-	const widePx = cssLengthToPx( wide );
-	/* Prefer content size; fall back to wide only if content is missing. */
-	return contentPx || widePx || Math.min( window.innerWidth - 32, 640 );
+/**
+ * Theme wide width in pixels.
+ *
+ * @return {number} Wide width.
+ */
+function getWideWidthPx() {
+	return getThemeSizePx( '--wp--style--global--wide-size', '80rem' );
 }
 
 /**
@@ -94,7 +105,34 @@ function clearPanelPosition( panel ) {
 }
 
 /**
- * Positions content/viewport panels below the trigger and on-screen.
+ * Centers a fixed panel at the given width below the trigger.
+ *
+ * @param {HTMLElement} panel Panel element.
+ * @param {number}      targetWidth Desired width in pixels.
+ * @param {number}      top         Top offset in pixels.
+ */
+function positionCenteredPanel( panel, targetWidth, top ) {
+	const viewportPadding = 16;
+	const width = Math.min(
+		targetWidth,
+		window.innerWidth - viewportPadding * 2
+	);
+	const left = Math.max(
+		viewportPadding,
+		Math.round( ( window.innerWidth - width ) / 2 )
+	);
+
+	panel.style.setProperty( '--smm-panel-top', `${ top }px` );
+	panel.style.top = `${ top }px`;
+	panel.style.transform = 'none';
+	panel.style.left = `${ left }px`;
+	panel.style.right = 'auto';
+	panel.style.width = `${ Math.round( width ) }px`;
+	panel.style.maxWidth = `calc(100vw - ${ viewportPadding * 2 }px)`;
+}
+
+/**
+ * Positions content/wide/viewport panels below the trigger and on-screen.
  *
  * @param {Element|null} ref Menu item element.
  * @param {object}       context Interactivity context.
@@ -121,15 +159,12 @@ function applyPanelPosition( ref, context ) {
 		ref;
 	const rect = trigger.getBoundingClientRect();
 	/* No gap for fixed panels — avoids hover/focus holes under the trigger. */
-	const gap = 0;
-	const top = Math.max( 0, Math.round( rect.bottom + gap ) );
-	const viewportPadding = 16;
-
-	panel.style.setProperty( '--smm-panel-top', `${ top }px` );
-	panel.style.top = `${ top }px`;
-	panel.style.transform = 'none';
+	const top = Math.max( 0, Math.round( rect.bottom ) );
 
 	if ( mode === 'viewport' ) {
+		panel.style.setProperty( '--smm-panel-top', `${ top }px` );
+		panel.style.top = `${ top }px`;
+		panel.style.transform = 'none';
 		panel.style.left = '0';
 		panel.style.right = '0';
 		panel.style.width = '100%';
@@ -137,21 +172,13 @@ function applyPanelPosition( ref, context ) {
 		return;
 	}
 
-	/* content */
-	const contentWidth = getContentWidthPx();
-	const width = Math.min(
-		contentWidth,
-		window.innerWidth - viewportPadding * 2
-	);
-	const left = Math.max(
-		viewportPadding,
-		Math.round( ( window.innerWidth - width ) / 2 )
-	);
+	if ( mode === 'wide' ) {
+		positionCenteredPanel( panel, getWideWidthPx(), top );
+		return;
+	}
 
-	panel.style.left = `${ left }px`;
-	panel.style.right = 'auto';
-	panel.style.width = `${ Math.round( width ) }px`;
-	panel.style.maxWidth = `calc(100vw - ${ viewportPadding * 2 }px)`;
+	/* content */
+	positionCenteredPanel( panel, getContentWidthPx(), top );
 }
 
 const { state, actions } = store( 'structured-mega-menu', {
@@ -258,9 +285,28 @@ const { state, actions } = store( 'structured-mega-menu', {
 		},
 
 		/**
+		 * Close when the pointer moves onto anything outside this menu item.
+		 * More reliable than mouseleave alone with position:fixed panels.
+		 *
+		 * @param {MouseEvent} event Mouse over event.
+		 */
+		handleOutsideHover( event ) {
+			const context = getContext();
+			if ( ! context?.isOpen || ! canHover() ) {
+				return;
+			}
+
+			const { ref } = getElement();
+			const target = event.target;
+			if ( ! ref || ! target || ref.contains( target ) ) {
+				return;
+			}
+
+			actions.close();
+		},
+
+		/**
 		 * Closes when focus leaves the mega menu item (trigger + panel).
-		 * Important for fixed viewport/content panels where the panel is
-		 * visually detached from the nav item.
 		 *
 		 * @param {FocusEvent} event Focus out event.
 		 */
@@ -291,10 +337,6 @@ const { state, actions } = store( 'structured-mega-menu', {
 					return;
 				}
 
-				/*
-				 * Viewport/content: also close when focus landed on <body>
-				 * after an outside click (focus may not move to a control).
-				 */
 				actions.close();
 			} );
 		},
@@ -311,20 +353,22 @@ const { state, actions } = store( 'structured-mega-menu', {
 		},
 
 		/**
-		 * Close when the pointer leaves the mega menu item (trigger + panel).
+		 * Backup close when mouseleave fires on the menu item wrapper.
+		 *
+		 * @param {MouseEvent} event Mouse leave event.
 		 */
-		handleMouseLeave() {
+		handleMouseLeave( event ) {
 			const context = getContext();
-			if ( ! context?.isOpen ) {
-				return;
-			}
-
-			/* Touch / coarse pointers: rely on outside tap / focus instead. */
-			if ( ! canHover() ) {
+			if ( ! context?.isOpen || ! canHover() ) {
 				return;
 			}
 
 			const { ref } = getElement();
+			const next = event.relatedTarget;
+			if ( next && ref?.contains( next ) ) {
+				return;
+			}
+
 			window.setTimeout( () => {
 				if ( ! context.isOpen || ! ref ) {
 					return;
@@ -334,13 +378,8 @@ const { state, actions } = store( 'structured-mega-menu', {
 					return;
 				}
 
-				const panel = ref.querySelector( '.smm-menu-item__panel' );
-				if ( panel?.matches?.( ':hover' ) ) {
-					return;
-				}
-
 				actions.close();
-			}, 120 );
+			}, 80 );
 		},
 
 		handleReposition() {

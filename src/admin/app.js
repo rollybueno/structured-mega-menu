@@ -305,6 +305,13 @@ function MenuEditor() {
 								},
 								{
 									label: __(
+										'Match wide width',
+										'structured-mega-menu'
+									),
+									value: 'wide',
+								},
+								{
+									label: __(
 										'Full viewport width',
 										'structured-mega-menu'
 									),

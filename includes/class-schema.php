@@ -49,7 +49,7 @@ class Schema {
 	 * @return string[]
 	 */
 	public static function get_panel_widths() {
-		return array( 'navigation', 'content', 'viewport' );
+		return array( 'navigation', 'content', 'wide', 'viewport' );
 	}
 
 	/**

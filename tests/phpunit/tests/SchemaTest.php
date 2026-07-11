@@ -51,6 +51,18 @@ class SchemaTest extends TestCase_Unit {
 	/**
 	 * @return void
 	 */
+	public function test_panel_widths_include_wide() {
+		$widths = Schema::get_panel_widths();
+
+		$this->assertContains( 'navigation', $widths );
+		$this->assertContains( 'content', $widths );
+		$this->assertContains( 'wide', $widths );
+		$this->assertContains( 'viewport', $widths );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function test_is_valid_layout_for_count() {
 		$this->assertTrue( Schema::is_valid_layout_for_count( '1-1', 2 ) );
 		$this->assertFalse( Schema::is_valid_layout_for_count( '1-1-1', 2 ) );

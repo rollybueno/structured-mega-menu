@@ -126,6 +126,7 @@ class Renderer {
 			data-wp-on--focusout="actions.handleFocusOut"
 			data-wp-on--keydown="actions.handleKeydown"
 			data-wp-on--mouseleave="actions.handleMouseLeave"
+			data-wp-on-window--mouseover="actions.handleOutsideHover"
 			data-wp-on-window--resize="actions.handleReposition"
 			data-wp-on-window--scroll="actions.handleReposition"
 			<?php if ( 'hover' === $opening_mode ) : ?>
