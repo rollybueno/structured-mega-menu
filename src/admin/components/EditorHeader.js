@@ -29,8 +29,12 @@ export default function EditorHeader( {
 	return (
 		<div className="smm-editor-header">
 			<div className="smm-editor-header__leading">
-				<Button variant="tertiary" onClick={ onBack }>
-					{ __( '← All mega menus', 'structured-mega-menu' ) }
+				<Button
+					className="smm-editor-header__back"
+					variant="tertiary"
+					onClick={ onBack }
+				>
+					{ __( '← All menus', 'structured-mega-menu' ) }
 				</Button>
 				<TextControl
 					label={ __( 'Menu title', 'structured-mega-menu' ) }
@@ -42,6 +46,8 @@ export default function EditorHeader( {
 						'structured-mega-menu'
 					) }
 					className="smm-editor-header__title"
+					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 				/>
 			</div>
 			<div className="smm-editor-header__actions">
@@ -54,7 +60,7 @@ export default function EditorHeader( {
 				>
 					{ __( 'Save', 'structured-mega-menu' ) }
 				</Button>
-				<Button variant="secondary" isDestructive onClick={ onDelete }>
+				<Button variant="tertiary" isDestructive onClick={ onDelete }>
 					{ __( 'Delete', 'structured-mega-menu' ) }
 				</Button>
 			</div>

@@ -3,8 +3,18 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { SelectControl } from '@wordpress/components';
 import { LAYOUT_PRESETS } from '../../shared/constants';
+
+/**
+ * @param {string} preset Layout preset like 1-2-1.
+ * @return {string} CSS grid-template-columns value.
+ */
+function tracksForPreset( preset ) {
+	return String( preset )
+		.split( '-' )
+		.map( ( part ) => `${ Math.max( 1, parseInt( part, 10 ) || 1 ) }fr` )
+		.join( ' ' );
+}
 
 /**
  * @param {Object}   props
@@ -21,18 +31,49 @@ export default function ColumnLayoutPicker( { columnCount, value, onChange } ) {
 	}
 
 	return (
-		<SelectControl
-			label={ __( 'Column layout', 'structured-mega-menu' ) }
-			value={ value }
-			options={ presets.map( ( preset ) => ( {
-				label: preset,
-				value: preset,
-			} ) ) }
-			onChange={ onChange }
-			help={ __(
-				'Layout ratios must match the number of enabled columns.',
-				'structured-mega-menu'
-			) }
-		/>
+		<div className="smm-layout-picker smm-settings-grid__full">
+			<span className="smm-layout-picker__label" id="smm-layout-label">
+				{ __( 'Column layout', 'structured-mega-menu' ) }
+			</span>
+			<div
+				className="smm-layout-picker__options"
+				role="radiogroup"
+				aria-labelledby="smm-layout-label"
+			>
+				{ presets.map( ( preset ) => {
+					const selected = value === preset;
+					const parts = String( preset ).split( '-' );
+
+					return (
+						<button
+							key={ preset }
+							type="button"
+							role="radio"
+							aria-checked={ selected }
+							aria-label={ preset }
+							title={ preset }
+							className={ `smm-layout-option${
+								selected ? ' is-selected' : ''
+							}` }
+							style={ {
+								'--smm-layout-tracks':
+									tracksForPreset( preset ),
+							} }
+							onClick={ () => onChange( preset ) }
+						>
+							{ parts.map( ( part, index ) => (
+								<span key={ `${ preset }-${ index }` } />
+							) ) }
+						</button>
+					);
+				} ) }
+			</div>
+			<p className="smm-layout-picker__help">
+				{ __(
+					'Choose how enabled columns share the panel width.',
+					'structured-mega-menu'
+				) }
+			</p>
+		</div>
 	);
 }

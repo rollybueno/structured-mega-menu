@@ -11,8 +11,6 @@ import {
 	Modal,
 	SelectControl,
 	ToggleControl,
-	Panel,
-	PanelBody,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 
@@ -53,21 +51,24 @@ function MenuList() {
 
 	return (
 		<div className="smm-list">
-			<div className="smm-list__header">
-				<h1 className="wp-heading-inline">
-					{ __( 'Mega Menus', 'structured-mega-menu' ) }
-				</h1>
-				<Button variant="primary" onClick={ () => openNew() }>
-					{ __( 'Add New', 'structured-mega-menu' ) }
-				</Button>
-			</div>
-
-			<p className="smm-help">
-				{ __(
-					'Create reusable mega menu configurations, then attach them to the Navigation block with a Mega Menu Item.',
-					'structured-mega-menu'
-				) }
-			</p>
+			<header className="smm-page-header">
+				<div className="smm-page-header__copy">
+					<h1 className="smm-page-header__title">
+						{ __( 'Mega Menus', 'structured-mega-menu' ) }
+					</h1>
+					<p className="smm-page-header__subtitle">
+						{ __(
+							'Build reusable mega menu configurations, then attach them to the Navigation block with a Mega Menu Item.',
+							'structured-mega-menu'
+						) }
+					</p>
+				</div>
+				<div className="smm-page-header__actions">
+					<Button variant="primary" onClick={ () => openNew() }>
+						{ __( 'Add New', 'structured-mega-menu' ) }
+					</Button>
+				</div>
+			</header>
 
 			{ error && (
 				<Notice status="error" isDismissible={ false }>
@@ -76,65 +77,91 @@ function MenuList() {
 			) }
 
 			{ isLoading ? (
-				<Spinner />
+				<div className="smm-surface">
+					<div className="smm-surface__body">
+						<Spinner />
+					</div>
+				</div>
 			) : (
-				<table className="wp-list-table widefat fixed striped smm-list-table">
-					<thead>
-						<tr>
-							<th scope="col">
-								{ __( 'Title', 'structured-mega-menu' ) }
-							</th>
-							<th scope="col">
-								{ __( 'Status', 'structured-mega-menu' ) }
-							</th>
-							<th scope="col">
-								{ __( 'Actions', 'structured-mega-menu' ) }
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{ ! menus.length && (
+				<div className="smm-surface smm-list-table-wrap">
+					<table className="wp-list-table widefat fixed striped smm-list-table">
+						<thead>
 							<tr>
-								<td colSpan={ 3 }>
-									{ __(
-										'No mega menus yet. Create one to get started.',
-										'structured-mega-menu'
-									) }
-								</td>
+								<th scope="col">
+									{ __( 'Title', 'structured-mega-menu' ) }
+								</th>
+								<th scope="col">
+									{ __( 'Status', 'structured-mega-menu' ) }
+								</th>
+								<th scope="col">
+									{ __( 'Actions', 'structured-mega-menu' ) }
+								</th>
 							</tr>
-						) }
-						{ menus.map( ( menu ) => (
-							<tr key={ menu.id }>
-								<td>
-									<strong>
-										{ menu.title?.raw ||
-											menu.title?.rendered ||
-											__(
-												'(no title)',
+						</thead>
+						<tbody>
+							{ ! menus.length && (
+								<tr>
+									<td
+										className="smm-list-empty"
+										colSpan={ 3 }
+									>
+										{ __(
+											'No mega menus yet. Create one to get started.',
+											'structured-mega-menu'
+										) }
+									</td>
+								</tr>
+							) }
+							{ menus.map( ( menu ) => (
+								<tr key={ menu.id }>
+									<td>
+										<strong>
+											{ menu.title?.raw ||
+												menu.title?.rendered ||
+												__(
+													'(no title)',
+													'structured-mega-menu'
+												) }
+										</strong>
+									</td>
+									<td>
+										<span
+											className={ `smm-status-pill${
+												menu.status === 'publish'
+													? ' is-publish'
+													: ''
+											}` }
+										>
+											{ menu.status }
+										</span>
+									</td>
+									<td>
+										<Button
+											variant="secondary"
+											onClick={ () =>
+												openMenu( menu.id )
+											}
+										>
+											{ __(
+												'Edit',
 												'structured-mega-menu'
 											) }
-									</strong>
-								</td>
-								<td>{ menu.status }</td>
-								<td>
-									<Button
-										variant="link"
-										onClick={ () => openMenu( menu.id ) }
-									>
-										{ __( 'Edit', 'structured-mega-menu' ) }
-									</Button>
-								</td>
-							</tr>
-						) ) }
-					</tbody>
-				</table>
+										</Button>
+									</td>
+								</tr>
+							) ) }
+						</tbody>
+					</table>
+				</div>
 			) }
 
-			<Panel className="smm-settings-panel">
-				<PanelBody
-					title={ __( 'Plugin settings', 'structured-mega-menu' ) }
-					initialOpen={ false }
-				>
+			<section className="smm-surface smm-list-settings">
+				<div className="smm-surface__header">
+					<h2 className="smm-surface__title">
+						{ __( 'Plugin settings', 'structured-mega-menu' ) }
+					</h2>
+				</div>
+				<div className="smm-surface__body">
 					<ToggleControl
 						label={ __(
 							'Delete all plugin data when uninstalled',
@@ -146,9 +173,10 @@ function MenuList() {
 							'Off by default. When enabled, uninstall removes mega menu posts, options, and plugin transients.',
 							'structured-mega-menu'
 						) }
+						__nextHasNoMarginBottom
 					/>
-				</PanelBody>
-			</Panel>
+				</div>
+			</section>
 		</div>
 	);
 }
@@ -244,119 +272,150 @@ function MenuEditor() {
 				onDismiss={ () => setUndoNotice( null ) }
 			/>
 
-			<Panel>
-				<PanelBody
-					title={ __( 'Menu settings', 'structured-mega-menu' ) }
-					initialOpen={ true }
-				>
-					<SelectControl
-						label={ __( 'Panel width', 'structured-mega-menu' ) }
-						value={ schema.settings?.panelWidth || 'navigation' }
-						options={ [
-							{
-								label: __(
-									'Match navigation width',
+			<section className="smm-surface">
+				<div className="smm-surface__header">
+					<h2 className="smm-surface__title">
+						{ __( 'Menu settings', 'structured-mega-menu' ) }
+					</h2>
+				</div>
+				<div className="smm-surface__body">
+					<div className="smm-settings-grid">
+						<SelectControl
+							label={ __(
+								'Panel width',
+								'structured-mega-menu'
+							) }
+							value={
+								schema.settings?.panelWidth || 'navigation'
+							}
+							options={ [
+								{
+									label: __(
+										'Match navigation width',
+										'structured-mega-menu'
+									),
+									value: 'navigation',
+								},
+								{
+									label: __(
+										'Match content width',
+										'structured-mega-menu'
+									),
+									value: 'content',
+								},
+								{
+									label: __(
+										'Full viewport width',
+										'structured-mega-menu'
+									),
+									value: 'viewport',
+								},
+							] }
+							onChange={ ( panelWidth ) =>
+								updateSettings( { panelWidth } )
+							}
+							__nextHasNoMarginBottom
+							__next40pxDefaultSize
+						/>
+						<SelectControl
+							label={ __(
+								'Opening mode',
+								'structured-mega-menu'
+							) }
+							value={ schema.settings?.openingMode || 'click' }
+							options={ [
+								{
+									label: __(
+										'Click',
+										'structured-mega-menu'
+									),
+									value: 'click',
+								},
+								{
+									label: __(
+										'Hover and focus',
+										'structured-mega-menu'
+									),
+									value: 'hover',
+								},
+							] }
+							onChange={ ( openingMode ) =>
+								updateSettings( { openingMode } )
+							}
+							help={ __(
+								'Hover mode still supports keyboard, touch, click, and Escape.',
+								'structured-mega-menu'
+							) }
+							__nextHasNoMarginBottom
+							__next40pxDefaultSize
+						/>
+						<SelectControl
+							label={ __(
+								'Mobile mode',
+								'structured-mega-menu'
+							) }
+							value={ schema.settings?.mobileMode || 'accordion' }
+							options={ [
+								{
+									label: __(
+										'Accordion',
+										'structured-mega-menu'
+									),
+									value: 'accordion',
+								},
+								{
+									label: __(
+										'Expanded stacked content',
+										'structured-mega-menu'
+									),
+									value: 'expanded',
+								},
+							] }
+							onChange={ ( mobileMode ) =>
+								updateSettings( { mobileMode } )
+							}
+							__nextHasNoMarginBottom
+							__next40pxDefaultSize
+						/>
+						<div className="smm-settings-grid__full smm-settings-toggles">
+							<ToggleControl
+								label={ __(
+									'Close on outside click',
 									'structured-mega-menu'
-								),
-								value: 'navigation',
-							},
-							{
-								label: __(
-									'Match content width',
+								) }
+								checked={
+									schema.settings?.closeOnOutsideClick !==
+									false
+								}
+								onChange={ ( closeOnOutsideClick ) =>
+									updateSettings( { closeOnOutsideClick } )
+								}
+								__nextHasNoMarginBottom
+							/>
+							<ToggleControl
+								label={ __(
+									'Close on Escape',
 									'structured-mega-menu'
-								),
-								value: 'content',
-							},
-							{
-								label: __(
-									'Full viewport width',
-									'structured-mega-menu'
-								),
-								value: 'viewport',
-							},
-						] }
-						onChange={ ( panelWidth ) =>
-							updateSettings( { panelWidth } )
-						}
-					/>
-					<SelectControl
-						label={ __( 'Opening mode', 'structured-mega-menu' ) }
-						value={ schema.settings?.openingMode || 'click' }
-						options={ [
-							{
-								label: __( 'Click', 'structured-mega-menu' ),
-								value: 'click',
-							},
-							{
-								label: __(
-									'Hover and focus',
-									'structured-mega-menu'
-								),
-								value: 'hover',
-							},
-						] }
-						onChange={ ( openingMode ) =>
-							updateSettings( { openingMode } )
-						}
-						help={ __(
-							'Hover mode still supports keyboard, touch, click, and Escape.',
-							'structured-mega-menu'
-						) }
-					/>
-					<SelectControl
-						label={ __( 'Mobile mode', 'structured-mega-menu' ) }
-						value={ schema.settings?.mobileMode || 'accordion' }
-						options={ [
-							{
-								label: __(
-									'Accordion',
-									'structured-mega-menu'
-								),
-								value: 'accordion',
-							},
-							{
-								label: __(
-									'Expanded stacked content',
-									'structured-mega-menu'
-								),
-								value: 'expanded',
-							},
-						] }
-						onChange={ ( mobileMode ) =>
-							updateSettings( { mobileMode } )
-						}
-					/>
-					<ToggleControl
-						label={ __(
-							'Close on outside click',
-							'structured-mega-menu'
-						) }
-						checked={
-							schema.settings?.closeOnOutsideClick !== false
-						}
-						onChange={ ( closeOnOutsideClick ) =>
-							updateSettings( { closeOnOutsideClick } )
-						}
-					/>
-					<ToggleControl
-						label={ __(
-							'Close on Escape',
-							'structured-mega-menu'
-						) }
-						checked={ schema.settings?.closeOnEscape !== false }
-						onChange={ ( closeOnEscape ) =>
-							updateSettings( { closeOnEscape } )
-						}
-					/>
-					<ColumnLayoutPicker
-						columnCount={ enabledCount }
-						value={ schema.settings?.layoutPreset || '1' }
-						onChange={ ( layoutPreset ) =>
-							updateSettings( { layoutPreset } )
-						}
-					/>
-				</PanelBody>
-			</Panel>
+								) }
+								checked={
+									schema.settings?.closeOnEscape !== false
+								}
+								onChange={ ( closeOnEscape ) =>
+									updateSettings( { closeOnEscape } )
+								}
+								__nextHasNoMarginBottom
+							/>
+						</div>
+						<ColumnLayoutPicker
+							columnCount={ enabledCount }
+							value={ schema.settings?.layoutPreset || '1' }
+							onChange={ ( layoutPreset ) =>
+								updateSettings( { layoutPreset } )
+							}
+						/>
+					</div>
+				</div>
+			</section>
 
 			<ColumnList />
 

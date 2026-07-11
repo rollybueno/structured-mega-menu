@@ -28,59 +28,72 @@ export default function ColumnList() {
 	}
 
 	return (
-		<div className="smm-column-list">
-			<div className="smm-column-list__toolbar">
+		<section className="smm-surface smm-column-list">
+			<div className="smm-surface__header">
+				<h2 className="smm-surface__title">
+					{ __( 'Columns', 'structured-mega-menu' ) }
+				</h2>
 				<p className="smm-column-list__count">
 					{ sprintf(
 						/* translators: 1: current column count, 2: maximum columns */
-						__( 'Columns: %1$d of %2$d', 'structured-mega-menu' ),
+						__( '%1$d of %2$d used', 'structured-mega-menu' ),
 						columns.length,
 						MAX_COLUMNS
 					) }
 				</p>
-				<div className="smm-column-list__add">
+			</div>
+			<div className="smm-surface__body">
+				<div className="smm-column-list__toolbar">
 					<span className="screen-reader-text">
 						{ __( 'Add column', 'structured-mega-menu' ) }
 					</span>
-					<Button
-						variant="secondary"
-						disabled={ atMax }
-						onClick={ () => addColumn( COLUMN_TYPES.IMAGE_CTA ) }
-					>
-						{ __( 'Image and CTA', 'structured-mega-menu' ) }
-					</Button>
-					<Button
-						variant="secondary"
-						disabled={ atMax }
-						onClick={ () => addColumn( COLUMN_TYPES.ICON_LINKS ) }
-					>
-						{ __( 'Links with icons', 'structured-mega-menu' ) }
-					</Button>
-					<Button
-						variant="secondary"
-						disabled={ atMax }
-						onClick={ () => addColumn( COLUMN_TYPES.LINK_LIST ) }
-					>
-						{ __( 'Link list', 'structured-mega-menu' ) }
-					</Button>
+					<div className="smm-column-list__add">
+						<Button
+							variant="secondary"
+							disabled={ atMax }
+							onClick={ () =>
+								addColumn( COLUMN_TYPES.IMAGE_CTA )
+							}
+						>
+							{ __( 'Image and CTA', 'structured-mega-menu' ) }
+						</Button>
+						<Button
+							variant="secondary"
+							disabled={ atMax }
+							onClick={ () =>
+								addColumn( COLUMN_TYPES.ICON_LINKS )
+							}
+						>
+							{ __( 'Links with icons', 'structured-mega-menu' ) }
+						</Button>
+						<Button
+							variant="secondary"
+							disabled={ atMax }
+							onClick={ () =>
+								addColumn( COLUMN_TYPES.LINK_LIST )
+							}
+						>
+							{ __( 'Link list', 'structured-mega-menu' ) }
+						</Button>
+					</div>
 				</div>
+				{ atMax && (
+					<p className="smm-column-list__max" role="status">
+						{ __(
+							'Maximum of four columns reached.',
+							'structured-mega-menu'
+						) }
+					</p>
+				) }
+				{ columns.map( ( column, index ) => (
+					<ColumnCard
+						key={ column.id }
+						column={ column }
+						index={ index }
+						total={ columns.length }
+					/>
+				) ) }
 			</div>
-			{ atMax && (
-				<p className="smm-column-list__max" role="status">
-					{ __(
-						'Maximum of four columns reached.',
-						'structured-mega-menu'
-					) }
-				</p>
-			) }
-			{ columns.map( ( column, index ) => (
-				<ColumnCard
-					key={ column.id }
-					column={ column }
-					index={ index }
-					total={ columns.length }
-				/>
-			) ) }
-		</div>
+		</section>
 	);
 }
