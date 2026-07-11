@@ -290,32 +290,22 @@
 .smm-column__cta {
 	display: inline-block;
 	margin-block-start: 0.75rem;
+	max-inline-size: 100%;
 }
 
-a.smm-column__cta.smm-column__cta--button,
-.smm-column__cta--button {
-	box-sizing: border-box;
-	padding: 0.55em 1.1em;
-	border-radius: var(--smm-cta-radius, 0.25rem);
-	font-weight: 600;
-	font-size: 0.9em;
-	line-height: 1.25;
+/*
+ * Defer to theme `.wp-element-button` (theme.json elements.button) for
+ * colors, padding, radius, and typography — only keep layout helpers here.
+ */
+.smm-column a.smm-column__cta.wp-element-button {
 	text-decoration: none !important;
-	text-align: center;
-	/* Explicit light-on-dark so theme link/button styles cannot collapse contrast. */
-	color: var(--smm-cta-color, #fff);
-	background-color: var(--smm-cta-bg, var(--wp--preset--color--contrast, #111));
-	border: 1px solid transparent;
 	cursor: pointer;
 }
 
-a.smm-column__cta.smm-column__cta--button:hover,
-a.smm-column__cta.smm-column__cta--button:focus-visible,
-a.smm-column__cta--button:hover,
-a.smm-column__cta--button:focus-visible {
-	color: var(--smm-cta-color, #fff);
+.smm-column a.smm-column__cta.wp-element-button:hover,
+.smm-column a.smm-column__cta.wp-element-button:focus,
+.smm-column a.smm-column__cta.wp-element-button:focus-visible {
 	text-decoration: none !important;
-	filter: brightness(1.08);
 }
 
 /* Icon links */

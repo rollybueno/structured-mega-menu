@@ -158,7 +158,7 @@ class Image_Cta implements Column_Type {
 
 		if ( $has_link && '' !== $cta_label ) {
 			$body .= sprintf(
-				'<a class="smm-column__cta smm-column__cta--button wp-element-button" %1$s>%2$s</a>',
+				'<a class="smm-column__cta wp-element-button" %1$s>%2$s</a>',
 				Markup::link_attributes( $url, $opens_in_new ),
 				esc_html( $cta_label )
 			);

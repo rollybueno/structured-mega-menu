@@ -310,28 +310,22 @@ const { state, actions } = store( 'structured-mega-menu', {
 			}
 		},
 
+		/**
+		 * Close when the pointer leaves the mega menu item (trigger + panel).
+		 */
 		handleMouseLeave() {
 			const context = getContext();
 			if ( ! context?.isOpen ) {
 				return;
 			}
 
-			const isHoverMode = context.openingMode === 'hover';
-			const isFixedPanel =
-				context.panelWidth === 'viewport' ||
-				context.panelWidth === 'content';
-
-			/* Click + navigation width: stay open until outside click / blur. */
-			if ( ! isHoverMode && ! isFixedPanel ) {
+			/* Touch / coarse pointers: rely on outside tap / focus instead. */
+			if ( ! canHover() ) {
 				return;
 			}
 
-			if ( isHoverMode && ! canHover() ) {
-				return;
-			}
-
+			const { ref } = getElement();
 			window.setTimeout( () => {
-				const { ref } = getElement();
 				if ( ! context.isOpen || ! ref ) {
 					return;
 				}
@@ -346,7 +340,7 @@ const { state, actions } = store( 'structured-mega-menu', {
 				}
 
 				actions.close();
-			}, 150 );
+			}, 120 );
 		},
 
 		handleReposition() {
