@@ -82,8 +82,8 @@
  * and falls back to currentColor mixes so light and dark themes both work.
  */
 .smm-menu-item__panel-inner {
-	--smm-surface: var(--smm-panel-bg, var(--wp--preset--color--base, #fff));
-	--smm-ink: var(--smm-panel-color, var(--wp--preset--color--contrast, currentColor));
+	--smm-surface: var(--smm-panel-bg, var(--wp--preset--color--base, var(--wp--preset--color--background, #fff)));
+	--smm-ink: var(--smm-panel-color, var(--wp--preset--color--contrast, var(--wp--preset--color--foreground, currentColor)));
 	--smm-muted: color-mix(in srgb, var(--smm-ink) 62%, transparent);
 	--smm-hairline: var(--smm-panel-border, color-mix(in srgb, var(--smm-ink) 14%, transparent));
 	--smm-soft: color-mix(in srgb, var(--smm-ink) 5%, transparent);
@@ -170,7 +170,10 @@
 .smm-menu-item.smm-panel-width-full .smm-menu-item__panel {
 	inline-size: min(
 		100vw - 2rem,
-		var(--wp--style--global--full-size, var(--smm-theme-full-size, 100rem))
+		var(
+			--wp--style--global--full-size,
+			var(--smm-theme-full-size, var(--wp--style--global--wide-size, 80rem))
+		)
 	);
 }
 

@@ -90,7 +90,13 @@ class Renderer {
 						array(
 							'wp-block-navigation-item',
 							'smm-menu-item',
-							'has-child',
+							/*
+							 * Do NOT add `has-child`. Core Navigation's
+							 * block_core_navigation_add_directives_to_submenu()
+							 * rewrites every LI.has-child to data-wp-interactive=
+							 * "core/navigation", which hijacks our store and
+							 * prevents the mega panel from opening.
+							 */
 							'smm-panel-width-' . $panel_width,
 							'smm-opening-' . $opening_mode,
 							'smm-mobile-' . $mobile_mode,

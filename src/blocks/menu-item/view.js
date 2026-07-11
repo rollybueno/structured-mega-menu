@@ -80,12 +80,14 @@ function getWideWidthPx() {
  */
 function getFullWidthPx() {
 	const root = getComputedStyle( document.documentElement );
-	const fromCore = root.getPropertyValue( '--wp--style--global--full-size' ).trim();
+	const fromCore = root
+		.getPropertyValue( '--wp--style--global--full-size' )
+		.trim();
 	const fromPlugin = root.getPropertyValue( '--smm-theme-full-size' ).trim();
 	return (
 		cssLengthToPx( fromCore ) ||
 		cssLengthToPx( fromPlugin ) ||
-		getThemeSizePx( '--wp--style--global--wide-size', '100rem' )
+		getWideWidthPx()
 	);
 }
 
