@@ -227,6 +227,35 @@ class SanitizerTest extends TestCase_Unit {
 	/**
 	 * @return void
 	 */
+	public function test_appearance_settings_are_sanitized() {
+		$sanitizer = $this->make_sanitizer();
+		$result    = $sanitizer->sanitize_schema(
+			array(
+				'version'  => 1,
+				'settings' => array(
+					'appearance' => array(
+						'density'         => 'roomy',
+						'radius'          => 'large',
+						'panelBackground' => '#112233',
+						'panelText'       => 'javascript:alert(1)',
+						'panelBorder'     => 'var(--wp--preset--color--primary)',
+					),
+				),
+				'columns'  => array(),
+			)
+		);
+
+		$appearance = $result['settings']['appearance'];
+		$this->assertSame( 'roomy', $appearance['density'] );
+		$this->assertSame( 'large', $appearance['radius'] );
+		$this->assertSame( '#112233', $appearance['panelBackground'] );
+		$this->assertSame( '', $appearance['panelText'] );
+		$this->assertSame( 'var(--wp--preset--color--primary)', $appearance['panelBorder'] );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function test_html_is_stripped_from_text_fields() {
 		$sanitizer = $this->make_sanitizer();
 		$result    = $sanitizer->sanitize_schema(

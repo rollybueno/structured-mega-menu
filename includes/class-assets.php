@@ -106,6 +106,7 @@ class Assets {
 				'layoutPresets'         => Schema::get_layout_presets(),
 				'defaults'              => Schema::get_default(),
 				'deleteDataOnUninstall' => (bool) get_option( SMM_OPTION_DELETE_DATA, false ),
+				'colorPalette'          => Appearance::get_theme_palette(),
 				'strings'               => array(
 					'appTitle' => __( 'Mega Menus', 'structured-mega-menu' ),
 				),

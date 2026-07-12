@@ -40,6 +40,7 @@ class Schema {
 			'closeOnEscape'       => true,
 			'mobileMode'          => 'accordion',
 			'layoutPreset'        => '1',
+			'appearance'          => Appearance::get_defaults(),
 		);
 	}
 
@@ -49,7 +50,20 @@ class Schema {
 	 * @return string[]
 	 */
 	public static function get_panel_widths() {
-		return array( 'navigation', 'content', 'wide', 'full', 'viewport' );
+		/**
+		 * Filters allowed mega menu panel width modes.
+		 *
+		 * Values become CSS modifiers (`smm-panel-width-{slug}`) and must be
+		 * sanitize_key-safe.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string[] $widths Panel width slugs.
+		 */
+		return apply_filters(
+			'structured_mega_menu_panel_widths',
+			array( 'navigation', 'content', 'wide', 'full', 'viewport' )
+		);
 	}
 
 	/**
@@ -102,7 +116,17 @@ class Schema {
 	 * @return string[]
 	 */
 	public static function get_opening_modes() {
-		return array( 'click', 'hover' );
+		/**
+		 * Filters allowed opening modes.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string[] $modes Opening mode slugs.
+		 */
+		return apply_filters(
+			'structured_mega_menu_opening_modes',
+			array( 'click', 'hover' )
+		);
 	}
 
 	/**
@@ -111,7 +135,17 @@ class Schema {
 	 * @return string[]
 	 */
 	public static function get_mobile_modes() {
-		return array( 'accordion', 'expanded' );
+		/**
+		 * Filters allowed mobile presentation modes.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string[] $modes Mobile mode slugs.
+		 */
+		return apply_filters(
+			'structured_mega_menu_mobile_modes',
+			array( 'accordion', 'expanded' )
+		);
 	}
 
 	/**
@@ -120,11 +154,21 @@ class Schema {
 	 * @return array<int, string[]>
 	 */
 	public static function get_layout_presets() {
-		return array(
-			1 => array( '1' ),
-			2 => array( '1-1', '1-2', '2-1' ),
-			3 => array( '1-1-1', '1-1-2', '2-1-1' ),
-			4 => array( '1-1-1-1', '1-1-1-2', '2-1-1-1' ),
+		/**
+		 * Filters layout presets keyed by enabled column count.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array<int, string[]> $presets Layout presets.
+		 */
+		return apply_filters(
+			'structured_mega_menu_layout_presets',
+			array(
+				1 => array( '1' ),
+				2 => array( '1-1', '1-2', '2-1' ),
+				3 => array( '1-1-1', '1-1-2', '2-1-1' ),
+				4 => array( '1-1-1-1', '1-1-1-2', '2-1-1-1' ),
+			)
 		);
 	}
 

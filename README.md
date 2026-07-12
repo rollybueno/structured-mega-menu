@@ -85,6 +85,8 @@ Built-in types implement `StructuredMegaMenu\Column_Types\Column_Type`.
 do_action( 'structured_mega_menu_register_column_types', $registry );
 ```
 
+See [`docs/hooks.md`](docs/hooks.md) for the full hook list and [`docs/css-api.md`](docs/css-api.md) for the public CSS variable contract. An example custom column lives in [`examples/sample-promo-column/`](examples/sample-promo-column/) (excluded from the WordPress.org ZIP).
+
 ### Public hooks
 
 | Hook | Type | Purpose |
@@ -93,7 +95,24 @@ do_action( 'structured_mega_menu_register_column_types', $registry );
 | `structured_mega_menu_column_schema` | filter | Adjust column schema for clients |
 | `structured_mega_menu_menu_schema` | filter | Adjust sanitized schema before save |
 | `structured_mega_menu_icon_registry` | filter | Extend curated Dashicons slugs |
-| `structured_mega_menu_rendered_column` | filter | (Phase 4) Filter rendered column HTML |
+| `structured_mega_menu_panel_widths` | filter | Allowed panel width modes |
+| `structured_mega_menu_opening_modes` | filter | Allowed opening modes |
+| `structured_mega_menu_mobile_modes` | filter | Allowed mobile modes |
+| `structured_mega_menu_layout_presets` | filter | Layout presets by column count |
+| `structured_mega_menu_menu_item_classes` | filter | Classes on the menu item wrapper |
+| `structured_mega_menu_panel_classes` | filter | Classes on the mega panel |
+| `structured_mega_menu_appearance_css_vars` | filter | CSS variables for appearance |
+| `structured_mega_menu_render_context` | filter | Context passed to column renderers |
+| `structured_mega_menu_rendered_column` | filter | Filter rendered column HTML |
+
+## For developers
+
+* **Source:** https://github.com/rollybueno/structured-mega-menu
+* **CSS API:** [`docs/css-api.md`](docs/css-api.md)
+* **Hooks:** [`docs/hooks.md`](docs/hooks.md)
+* **Example column:** [`examples/sample-promo-column/`](examples/sample-promo-column/)
+
+Appearance settings (density, radius, panel colors) map to the public `--smm-panel-*` variables — prefer those over selector overrides.
 
 ## Accessibility behavior
 

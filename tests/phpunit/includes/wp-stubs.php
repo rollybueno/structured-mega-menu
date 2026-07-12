@@ -27,6 +27,13 @@ namespace {
 		}
 	}
 
+	if ( ! function_exists( 'sanitize_html_class' ) ) {
+		function sanitize_html_class( $class_name ) {
+			$class_name = preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $class_name );
+			return is_string( $class_name ) ? $class_name : '';
+		}
+	}
+
 	if ( ! function_exists( 'sanitize_text_field' ) ) {
 		function sanitize_text_field( $str ) {
 			$str = (string) $str;

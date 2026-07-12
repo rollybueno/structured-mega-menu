@@ -117,6 +117,7 @@ class Sanitizer {
 			'closeOnEscape'       => $this->to_bool( isset( $settings['closeOnEscape'] ) ? $settings['closeOnEscape'] : true ),
 			'mobileMode'          => $mobile_mode,
 			'layoutPreset'        => $layout,
+			'appearance'          => Appearance::sanitize( isset( $settings['appearance'] ) ? $settings['appearance'] : array() ),
 		);
 	}
 

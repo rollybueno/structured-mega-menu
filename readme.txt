@@ -28,8 +28,10 @@ Configurations are managed under Appearance → Mega Menus using a native WordPr
 * Custom `structured-mega-menu/menu-item` block insertable only inside Navigation
 * Click-first opening with accessible keyboard and touch support
 * Theme-aware panel widths (navigation, content, viewport)
+* Per-menu appearance controls (density, radius, panel colors → CSS variables)
 * WordPress Dashicons for Links with icons (core GPL), plus optional Media Library uploads
 * No tracking, telemetry, ads, or remote services
+* Developer hooks and a documented public CSS API
 
 = Version 1 limitations =
 
@@ -62,6 +64,10 @@ By default, no. Data is removed on uninstall only if you explicitly enable “De
 = Can I use more than four columns? =
 
 Not in version 1. The maximum is four columns.
+
+= How do developers customize the plugin? =
+
+Public CSS variables and PHP hooks are documented in the plugin’s `docs/` folder (`css-api.md`, `hooks.md`). Source and build tooling live at https://github.com/rollybueno/structured-mega-menu. An example custom column type is available in the GitHub `/examples` directory (not included in the WordPress.org ZIP).
 
 == Screenshots ==
 

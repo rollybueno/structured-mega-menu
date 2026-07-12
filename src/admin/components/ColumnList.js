@@ -8,8 +8,8 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import ColumnCard from './ColumnCard';
 import EmptyState from './EmptyState';
 import { STORE_NAME } from '../store';
-import { MAX_COLUMNS, COLUMN_TYPES } from '../../shared/constants';
-import { canAddColumn } from '../utilities/columns';
+import { MAX_COLUMNS } from '../../shared/constants';
+import { canAddColumn, getRegisteredColumnTypes } from '../utilities/columns';
 
 /**
  * @return {JSX.Element} Column list.
@@ -22,6 +22,7 @@ export default function ColumnList() {
 	);
 
 	const atMax = ! canAddColumn( columns );
+	const types = getRegisteredColumnTypes();
 
 	if ( ! columns.length ) {
 		return <EmptyState onSelect={ ( type ) => addColumn( type ) } />;
@@ -48,33 +49,16 @@ export default function ColumnList() {
 						{ __( 'Add column', 'structured-mega-menu' ) }
 					</span>
 					<div className="smm-column-list__add">
-						<Button
-							variant="secondary"
-							disabled={ atMax }
-							onClick={ () =>
-								addColumn( COLUMN_TYPES.IMAGE_CTA )
-							}
-						>
-							{ __( 'Image and CTA', 'structured-mega-menu' ) }
-						</Button>
-						<Button
-							variant="secondary"
-							disabled={ atMax }
-							onClick={ () =>
-								addColumn( COLUMN_TYPES.ICON_LINKS )
-							}
-						>
-							{ __( 'Links with icons', 'structured-mega-menu' ) }
-						</Button>
-						<Button
-							variant="secondary"
-							disabled={ atMax }
-							onClick={ () =>
-								addColumn( COLUMN_TYPES.LINK_LIST )
-							}
-						>
-							{ __( 'Link list', 'structured-mega-menu' ) }
-						</Button>
+						{ types.map( ( type ) => (
+							<Button
+								key={ type.name }
+								variant="secondary"
+								disabled={ atMax }
+								onClick={ () => addColumn( type.name ) }
+							>
+								{ type.label }
+							</Button>
+						) ) }
 					</div>
 				</div>
 				{ atMax && (

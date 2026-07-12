@@ -16,12 +16,17 @@ import { countEnabledColumns } from '../../shared/schema';
  * @return {Object} New column.
  */
 export function createColumn( type ) {
+	const phpDefaults = window.smmAdmin?.columnTypes?.[ type ]?.defaults;
+	const settings = phpDefaults
+		? { ...phpDefaults }
+		: { ...getColumnDefaults( type ) };
+
 	return {
 		id: createColumnId(),
 		type,
 		width: 1,
 		enabled: true,
-		settings: { ...getColumnDefaults( type ) },
+		settings,
 		_iconCache: type === COLUMN_TYPES.ICON_LINKS ? {} : undefined,
 	};
 }
@@ -215,6 +220,29 @@ export function switchRepeaterType( column, nextType ) {
 		id: column.id,
 		enabled: column.enabled !== false,
 	};
+}
+
+/**
+ * Registered column types from the PHP registry (localized as smmAdmin.columnTypes).
+ *
+ * @return {Array<{name:string,label:string,schema?:Object,defaults?:Object}>} Types.
+ */
+export function getRegisteredColumnTypes() {
+	const map = window.smmAdmin?.columnTypes;
+	if ( ! map || typeof map !== 'object' ) {
+		return [
+			{ name: COLUMN_TYPES.IMAGE_CTA, label: 'Image and CTA' },
+			{ name: COLUMN_TYPES.ICON_LINKS, label: 'Links with icons' },
+			{ name: COLUMN_TYPES.LINK_LIST, label: 'Link list' },
+		];
+	}
+
+	return Object.keys( map ).map( ( name ) => ( {
+		name,
+		label: map[ name ].label || name,
+		schema: map[ name ].schema,
+		defaults: map[ name ].defaults,
+	} ) );
 }
 
 /**

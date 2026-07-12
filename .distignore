@@ -18,6 +18,7 @@
 /vendor
 /tests
 /src
+/examples
 /phpcs.xml.dist
 /phpunit.xml.dist
 /playwright.config.js

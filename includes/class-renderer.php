@@ -63,6 +63,9 @@ class Renderer {
 		$mobile_mode   = isset( $settings['mobileMode'] ) ? sanitize_key( $settings['mobileMode'] ) : 'accordion';
 		$close_outside = ! empty( $settings['closeOnOutsideClick'] );
 		$close_escape  = ! isset( $settings['closeOnEscape'] ) || ! empty( $settings['closeOnEscape'] );
+		$appearance    = isset( $settings['appearance'] ) && is_array( $settings['appearance'] )
+			? Appearance::sanitize( $settings['appearance'] )
+			: Appearance::get_defaults();
 
 		$trigger_type     = isset( $attributes['triggerType'] ) ? sanitize_key( $attributes['triggerType'] ) : 'button';
 		$url              = isset( $attributes['url'] ) ? esc_url( $attributes['url'] ) : '';
@@ -76,38 +79,109 @@ class Renderer {
 			'mobileMode' => $mobile_mode,
 		);
 
+		/**
+		 * Filters the render context passed to column renderers.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $context    Render context.
+		 * @param array $settings   Menu settings.
+		 * @param array $attributes Block attributes.
+		 */
+		$context = apply_filters( 'structured_mega_menu_render_context', $context, $settings, $attributes );
+
 		$panel_html = $instance->render_columns( $enabled_columns, $context );
 
 		if ( '' === $panel_html ) {
 			return self::render_static_label( $label, 'is-empty-config' );
 		}
 
+		$item_classes = array_filter(
+			array_merge(
+				array(
+					'wp-block-navigation-item',
+					'smm-menu-item',
+					/*
+					 * Do NOT add `has-child`. Core Navigation's
+					 * block_core_navigation_add_directives_to_submenu()
+					 * rewrites every LI.has-child to data-wp-interactive=
+					 * "core/navigation", which hijacks our store and
+					 * prevents the mega panel from opening.
+					 */
+					'smm-panel-width-' . $panel_width,
+					'smm-opening-' . $opening_mode,
+					'smm-mobile-' . $mobile_mode,
+				),
+				Appearance::get_wrapper_classes( $appearance )
+			)
+		);
+
+		/**
+		 * Filters CSS classes on the mega menu item wrapper (`li`).
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string[] $item_classes Wrapper classes.
+		 * @param array    $settings     Menu settings.
+		 * @param array    $attributes   Block attributes.
+		 * @param int      $menu_id      Mega menu post ID.
+		 */
+		$item_classes = apply_filters( 'structured_mega_menu_menu_item_classes', $item_classes, $settings, $attributes, $menu_id );
+		$item_classes = array_values(
+			array_filter(
+				array_map(
+					static function ( $class_name ) {
+						return is_string( $class_name ) ? sanitize_html_class( $class_name ) : '';
+					},
+					(array) $item_classes
+				)
+			)
+		);
+
+		$css_vars = Appearance::to_css_vars( $appearance );
+		$css_vars['--smm-grid-template'] = $grid_template;
+
+		/**
+		 * Filters CSS custom properties applied to the menu item wrapper.
+		 *
+		 * Keys must be `--smm-*` (or other `--*`) custom properties.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array<string, string> $css_vars  Property map.
+		 * @param array                 $settings  Menu settings.
+		 * @param int                   $menu_id   Mega menu post ID.
+		 */
+		$css_vars     = apply_filters( 'structured_mega_menu_appearance_css_vars', $css_vars, $settings, $menu_id );
+		$wrapper_style = Appearance::css_vars_to_style( is_array( $css_vars ) ? $css_vars : array() );
+
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
-				'class' => implode(
-					' ',
-					array_filter(
-						array(
-							'wp-block-navigation-item',
-							'smm-menu-item',
-							/*
-							 * Do NOT add `has-child`. Core Navigation's
-							 * block_core_navigation_add_directives_to_submenu()
-							 * rewrites every LI.has-child to data-wp-interactive=
-							 * "core/navigation", which hijacks our store and
-							 * prevents the mega panel from opening.
-							 */
-							'smm-panel-width-' . $panel_width,
-							'smm-opening-' . $opening_mode,
-							'smm-mobile-' . $mobile_mode,
-						)
-					)
-				),
-				/*
-				 * Desktop column template lives on the item so mobile/overlay
-				 * CSS can override --smm-grid-template on the grid child.
-				 */
-				'style' => '--smm-grid-template: ' . $grid_template . ';',
+				'class' => implode( ' ', $item_classes ),
+				'style' => $wrapper_style,
+			)
+		);
+
+		$panel_classes = array( 'smm-menu-item__panel' );
+
+		/**
+		 * Filters CSS classes on the mega menu panel element.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string[] $panel_classes Panel classes.
+		 * @param array    $settings      Menu settings.
+		 * @param int      $menu_id       Mega menu post ID.
+		 */
+		$panel_classes = apply_filters( 'structured_mega_menu_panel_classes', $panel_classes, $settings, $menu_id );
+		$panel_classes = array_values(
+			array_filter(
+				array_map(
+					static function ( $class_name ) {
+						return is_string( $class_name ) ? sanitize_html_class( $class_name ) : '';
+					},
+					(array) $panel_classes
+				)
 			)
 		);
 
@@ -193,7 +267,7 @@ class Renderer {
 
 			<div
 				id="<?php echo esc_attr( $panel_id ); ?>"
-				class="smm-menu-item__panel"
+				class="<?php echo esc_attr( implode( ' ', $panel_classes ) ); ?>"
 				hidden
 				data-wp-bind--hidden="!context.isOpen"
 				style="<?php echo esc_attr( '--smm-panel-min-width: ' . $panel_min_rem . 'rem;' ); ?>"

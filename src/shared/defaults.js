@@ -15,6 +15,13 @@ export function getDefaultSettings() {
 		closeOnEscape: true,
 		mobileMode: 'accordion',
 		layoutPreset: '1',
+		appearance: {
+			density: 'default',
+			radius: 'inherit',
+			panelBackground: '',
+			panelText: '',
+			panelBorder: '',
+		},
 	};
 }
 

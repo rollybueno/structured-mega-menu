@@ -29,6 +29,7 @@ import { useUnsavedChangesWarning } from './hooks/useUnsavedChanges';
 import EditorHeader from './components/EditorHeader';
 import ColumnList from './components/ColumnList';
 import ColumnLayoutPicker from './components/ColumnLayoutPicker';
+import AppearanceSettings from './components/AppearanceSettings';
 import UndoNotice from './components/UndoNotice';
 import ValidationSummary from './components/ValidationSummary';
 
@@ -451,6 +452,12 @@ function MenuEditor() {
 							value={ schema.settings?.layoutPreset || '1' }
 							onChange={ ( layoutPreset ) =>
 								updateSettings( { layoutPreset } )
+							}
+						/>
+						<AppearanceSettings
+							appearance={ schema.settings?.appearance }
+							onChange={ ( appearance ) =>
+								updateSettings( { appearance } )
 							}
 						/>
 					</div>

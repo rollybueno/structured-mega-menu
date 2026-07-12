@@ -5,36 +5,52 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { COLUMN_TYPES } from '../../shared/constants';
+import { getRegisteredColumnTypes } from '../utilities/columns';
 
-const CARDS = [
-	{
-		type: COLUMN_TYPES.IMAGE_CTA,
+const BUILTIN_META = {
+	[ COLUMN_TYPES.IMAGE_CTA ]: {
 		eyebrow: __( 'Featured', 'structured-mega-menu' ),
-		title: __( 'Image and CTA', 'structured-mega-menu' ),
 		description: __(
 			'Featured image, supporting copy, and a call to action.',
 			'structured-mega-menu'
 		),
 	},
-	{
-		type: COLUMN_TYPES.ICON_LINKS,
+	[ COLUMN_TYPES.ICON_LINKS ]: {
 		eyebrow: __( 'Visual', 'structured-mega-menu' ),
-		title: __( 'Links with icons', 'structured-mega-menu' ),
 		description: __(
 			'Descriptive navigation links with visual icons.',
 			'structured-mega-menu'
 		),
 	},
-	{
-		type: COLUMN_TYPES.LINK_LIST,
+	[ COLUMN_TYPES.LINK_LIST ]: {
 		eyebrow: __( 'Simple', 'structured-mega-menu' ),
-		title: __( 'Link list', 'structured-mega-menu' ),
 		description: __(
 			'Simple navigation links with optional descriptions.',
 			'structured-mega-menu'
 		),
 	},
-];
+};
+
+/**
+ * @return {Array<Object>} Cards for the empty state.
+ */
+function getCards() {
+	return getRegisteredColumnTypes().map( ( type ) => {
+		const meta = BUILTIN_META[ type.name ] || {
+			eyebrow: __( 'Custom', 'structured-mega-menu' ),
+			description: __(
+				'Custom column type registered by a theme or plugin.',
+				'structured-mega-menu'
+			),
+		};
+
+		return {
+			type: type.name,
+			title: type.label,
+			...meta,
+		};
+	} );
+}
 
 /**
  * @param {Object}   props
@@ -43,6 +59,8 @@ const CARDS = [
  * @return {JSX.Element} Empty state.
  */
 export default function EmptyState( { onSelect, disabled } ) {
+	const cards = getCards();
+
 	return (
 		<div className="smm-surface">
 			<div className="smm-surface__header">
@@ -58,7 +76,7 @@ export default function EmptyState( { onSelect, disabled } ) {
 					) }
 				</p>
 				<div className="smm-empty-state__cards">
-					{ CARDS.map( ( card ) => (
+					{ cards.map( ( card ) => (
 						<button
 							key={ card.type }
 							type="button"
@@ -94,7 +112,7 @@ export default function EmptyState( { onSelect, disabled } ) {
 export function ColumnTypePicker( { onSelect, disabled } ) {
 	return (
 		<div className="smm-column-type-picker">
-			{ CARDS.map( ( card ) => (
+			{ getCards().map( ( card ) => (
 				<Button
 					key={ card.type }
 					variant="secondary"

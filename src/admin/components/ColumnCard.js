@@ -15,8 +15,9 @@ import SortableList from './SortableList';
 import ImageCtaFields from './column-types/ImageCtaFields';
 import IconLinksFields from './column-types/IconLinksFields';
 import LinkListFields from './column-types/LinkListFields';
+import GenericColumnFields from './column-types/GenericColumnFields';
 import { getColumnSummary } from '../utilities/summaries';
-import { getTypeLabel } from '../utilities/columns';
+import { getRegisteredColumnTypes } from '../utilities/columns';
 import { STORE_NAME } from '../store';
 import { COLUMN_TYPES, MAX_COLUMNS } from '../../shared/constants';
 
@@ -155,20 +156,12 @@ export default function ColumnCard( { column, index, total } ) {
 					<SelectControl
 						label={ __( 'Column type', 'structured-mega-menu' ) }
 						value={ column.type }
-						options={ [
-							{
-								label: getTypeLabel( COLUMN_TYPES.IMAGE_CTA ),
-								value: COLUMN_TYPES.IMAGE_CTA,
-							},
-							{
-								label: getTypeLabel( COLUMN_TYPES.ICON_LINKS ),
-								value: COLUMN_TYPES.ICON_LINKS,
-							},
-							{
-								label: getTypeLabel( COLUMN_TYPES.LINK_LIST ),
-								value: COLUMN_TYPES.LINK_LIST,
-							},
-						] }
+						options={ getRegisteredColumnTypes().map(
+							( type ) => ( {
+								label: type.label,
+								value: type.name,
+							} )
+						) }
 						onChange={ ( nextType ) =>
 							changeColumnType( column.id, nextType, false )
 						}
@@ -197,6 +190,15 @@ export default function ColumnCard( { column, index, total } ) {
 							onChange={ updateSettings }
 						/>
 					) }
+					{ column.type !== COLUMN_TYPES.IMAGE_CTA &&
+						column.type !== COLUMN_TYPES.ICON_LINKS &&
+						column.type !== COLUMN_TYPES.LINK_LIST && (
+							<GenericColumnFields
+								settings={ column.settings }
+								columnType={ column.type }
+								onChange={ updateSettings }
+							/>
+						) }
 				</div>
 			) }
 
