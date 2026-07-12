@@ -61,7 +61,7 @@ export function createItem( type ) {
 	if ( type === COLUMN_TYPES.ICON_LINKS ) {
 		return {
 			...base,
-			icon: { source: 'library', value: 'document', url: '' },
+			icon: { source: 'library', value: 'media-document', url: '' },
 		};
 	}
 
@@ -202,7 +202,7 @@ export function switchRepeaterType( column, nextType ) {
 					opensInNewTab: !! item.opensInNewTab,
 					icon: cache[ item.id ] || {
 						source: 'library',
-						value: 'document',
+						value: 'media-document',
 					},
 				} ) ),
 			},

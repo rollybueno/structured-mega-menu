@@ -92,7 +92,7 @@ do_action( 'structured_mega_menu_register_column_types', $registry );
 | `structured_mega_menu_register_column_types` | action | Register custom column types |
 | `structured_mega_menu_column_schema` | filter | Adjust column schema for clients |
 | `structured_mega_menu_menu_schema` | filter | Adjust sanitized schema before save |
-| `structured_mega_menu_icon_registry` | filter | Extend built-in icon slugs |
+| `structured_mega_menu_icon_registry` | filter | Extend curated Dashicons slugs |
 | `structured_mega_menu_rendered_column` | filter | (Phase 4) Filter rendered column HTML |
 
 ## Accessibility behavior

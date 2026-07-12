@@ -49,7 +49,7 @@ class Assets {
 				wp_register_style(
 					'smm-admin',
 					SMM_PLUGIN_URL . 'build/admin/index.css',
-					array( 'wp-components' ),
+					array( 'wp-components', 'dashicons' ),
 					isset( $asset['version'] ) ? $asset['version'] : SMM_VERSION
 				);
 			}

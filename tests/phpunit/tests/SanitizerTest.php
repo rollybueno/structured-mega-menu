@@ -163,7 +163,7 @@ class SanitizerTest extends TestCase_Unit {
 									'url'     => 'https://example.com/docs',
 									'icon'    => array(
 										'source' => 'library',
-										'value'  => 'document',
+										'value'  => 'media-document',
 									),
 								),
 								array(
@@ -184,6 +184,44 @@ class SanitizerTest extends TestCase_Unit {
 		$this->assertSame( 'Docs', $items[0]['label'] );
 		$this->assertFalse( $items[1]['enabled'] );
 		$this->assertSame( 'Links', $result['columns'][0]['settings']['heading'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function test_legacy_icon_slug_migrates_to_dashicons() {
+		$sanitizer = $this->make_sanitizer();
+		$result    = $sanitizer->sanitize_schema(
+			array(
+				'version'  => 1,
+				'settings' => array(),
+				'columns'  => array(
+					array(
+						'id'       => 'links',
+						'type'     => 'icon_links',
+						'enabled'  => true,
+						'settings' => array(
+							'items' => array(
+								array(
+									'id'      => 'item-1',
+									'enabled' => true,
+									'label'   => 'Docs',
+									'url'     => 'https://example.com/docs',
+									'icon'    => array(
+										'source' => 'library',
+										'value'  => 'document',
+									),
+								),
+							),
+						),
+					),
+				),
+			)
+		);
+
+		$icon = $result['columns'][0]['settings']['items'][0]['icon'];
+		$this->assertSame( 'library', $icon['source'] );
+		$this->assertSame( 'media-document', $icon['value'] );
 	}
 
 	/**

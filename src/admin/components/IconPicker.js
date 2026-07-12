@@ -1,8 +1,8 @@
 /**
- * Icon picker: built-in library or uploaded media.
+ * Icon picker: WordPress Dashicons library or uploaded media.
  */
 
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useMemo, useState } from '@wordpress/element';
 import { Button, TextControl, Modal } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
@@ -41,6 +41,23 @@ function openIconMediaFrame() {
 }
 
 /**
+ * @param {string} slug Dashicons name without prefix.
+ * @return {JSX.Element|null} Dashicon span.
+ */
+function DashiconPreview( { slug } ) {
+	if ( ! slug ) {
+		return null;
+	}
+
+	return (
+		<span
+			className={ `dashicons dashicons-${ slug }` }
+			aria-hidden="true"
+		/>
+	);
+}
+
+/**
  * @param {Object}   props
  * @param {Object}   props.value    Icon value { source, value, url? }.
  * @param {Function} props.onChange
@@ -70,6 +87,8 @@ export default function IconPicker( { value, onChange } ) {
 	const current = value?.value || '';
 	const mediaUrl = value?.url || '';
 	const hasIcon = !! current;
+	const currentLabel =
+		icons.find( ( icon ) => icon.slug === current )?.label || current;
 
 	const selectUpload = async () => {
 		const media = await openIconMediaFrame();
@@ -95,10 +114,10 @@ export default function IconPicker( { value, onChange } ) {
 				<div className="smm-icon-picker__preview" aria-hidden="true">
 					{ source === 'media' && mediaUrl ? (
 						<img src={ mediaUrl } alt="" />
+					) : current && source === 'library' ? (
+						<DashiconPreview slug={ current } />
 					) : (
-						<span className="smm-icon-picker__slug">
-							{ current || '—' }
-						</span>
+						<span className="smm-icon-picker__slug">—</span>
 					) }
 				</div>
 				<div className="smm-icon-picker__meta">
@@ -107,14 +126,14 @@ export default function IconPicker( { value, onChange } ) {
 							? __( 'No icon selected', 'structured-mega-menu' )
 							: source === 'media'
 							? __( 'Custom upload', 'structured-mega-menu' )
-							: current }
+							: currentLabel }
 					</p>
 					<div className="smm-field-actions">
 						<Button
 							variant="secondary"
 							onClick={ () => setIsOpen( true ) }
 						>
-							{ __( 'Library', 'structured-mega-menu' ) }
+							{ __( 'Dashicons', 'structured-mega-menu' ) }
 						</Button>
 						<Button variant="secondary" onClick={ selectUpload }>
 							{ hasIcon && source === 'media'
@@ -131,41 +150,80 @@ export default function IconPicker( { value, onChange } ) {
 			</div>
 			{ isOpen && (
 				<Modal
-					title={ __( 'Select icon', 'structured-mega-menu' ) }
+					title={ __( 'Select Dashicon', 'structured-mega-menu' ) }
 					onRequestClose={ () => setIsOpen( false ) }
 					className="smm-icon-picker__modal"
 				>
-					<TextControl
-						label={ __( 'Search icons', 'structured-mega-menu' ) }
-						value={ search }
-						onChange={ setSearch }
-						__nextHasNoMarginBottom
-						__next40pxDefaultSize
-					/>
-					<ul className="smm-icon-picker__grid">
-						{ filtered.map( ( icon ) => (
-							<li key={ icon.slug }>
-								<Button
-									variant={
-										source === 'library' &&
-										current === icon.slug
-											? 'primary'
-											: 'secondary'
-									}
-									onClick={ () => {
-										onChange( {
-											source: 'library',
-											value: icon.slug,
-											url: '',
-										} );
-										setIsOpen( false );
-									} }
-								>
-									{ icon.label || icon.slug }
-								</Button>
-							</li>
-						) ) }
-					</ul>
+					<div className="smm-icon-picker__modal-body">
+						<div className="smm-icon-picker__modal-toolbar">
+							<TextControl
+								label={ __(
+									'Search icons',
+									'structured-mega-menu'
+								) }
+								hideLabelFromVision
+								placeholder={ __(
+									'Search icons…',
+									'structured-mega-menu'
+								) }
+								value={ search }
+								onChange={ setSearch }
+								__nextHasNoMarginBottom
+								__next40pxDefaultSize
+							/>
+							<p className="smm-icon-picker__modal-count" role="status">
+								{ filtered.length === 1
+									? __( '1 icon', 'structured-mega-menu' )
+									: /* translators: %d: number of icons */
+									  sprintf(
+											__( '%d icons', 'structured-mega-menu' ),
+											filtered.length
+									  ) }
+							</p>
+						</div>
+						{ filtered.length === 0 ? (
+							<p className="smm-icon-picker__modal-empty">
+								{ __(
+									'No icons match your search.',
+									'structured-mega-menu'
+								) }
+							</p>
+						) : (
+							<ul className="smm-icon-picker__grid">
+								{ filtered.map( ( icon ) => (
+									<li key={ icon.slug }>
+										<Button
+											className="smm-icon-picker__option"
+											variant={
+												source === 'library' &&
+												current === icon.slug
+													? 'primary'
+													: 'secondary'
+											}
+											label={ icon.label || icon.slug }
+											showTooltip
+											onClick={ () => {
+												onChange( {
+													source: 'library',
+													value: icon.slug,
+													url: '',
+												} );
+												setIsOpen( false );
+											} }
+										>
+											<span
+												className={ `dashicons dashicons-${ icon.slug }` }
+												aria-hidden="true"
+											/>
+											<span className="smm-icon-picker__option-label">
+												{ icon.label || icon.slug }
+											</span>
+										</Button>
+									</li>
+								) ) }
+							</ul>
+						) }
+					</div>
 				</Modal>
 			) }
 		</div>

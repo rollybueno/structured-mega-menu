@@ -233,7 +233,10 @@ class Icon_Links implements Column_Type {
 					$url            = $attachment_url ? $attachment_url : '';
 				}
 			} else {
-				$value = isset( $icon['value'] ) ? sanitize_key( $icon['value'] ) : '';
+				$value = Icons::normalize_slug( isset( $icon['value'] ) ? $icon['value'] : '' );
+				if ( $value && ! Icons::has( $value ) ) {
+					$value = '';
+				}
 			}
 
 			$sanitized[] = array(

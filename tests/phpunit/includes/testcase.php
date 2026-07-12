@@ -9,6 +9,7 @@ namespace StructuredMegaMenu\Tests;
 
 use PHPUnit\Framework\TestCase;
 use StructuredMegaMenu\Column_Types\Column_Registry;
+use StructuredMegaMenu\Icons;
 use StructuredMegaMenu\Plugin;
 use StructuredMegaMenu\Sanitizer;
 
@@ -71,6 +72,7 @@ abstract class TestCase_Unit extends TestCase {
 		$GLOBALS['smm_test_posts']     = array();
 		$GLOBALS['smm_test_post_meta'] = array();
 
+		Icons::init();
 		$this->boot_plugin();
 	}
 }

@@ -114,8 +114,13 @@ export default function RepeaterRow( {
 							{ item.icon?.source === 'media' &&
 							item.icon?.url ? (
 								<img src={ item.icon.url } alt="" />
+							) : item.icon?.source === 'library' &&
+							  item.icon?.value ? (
+								<span
+									className={ `dashicons dashicons-${ item.icon.value }` }
+								/>
 							) : (
-								item.icon?.value || '•'
+								'•'
 							) }
 						</span>
 					) }

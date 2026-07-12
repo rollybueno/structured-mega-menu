@@ -28,7 +28,7 @@ Configurations are managed under Appearance → Mega Menus using a native WordPr
 * Custom `structured-mega-menu/menu-item` block insertable only inside Navigation
 * Click-first opening with accessible keyboard and touch support
 * Theme-aware panel widths (navigation, content, viewport)
-* Locally bundled icon library (no CDN, no external APIs)
+* WordPress Dashicons for Links with icons (core GPL), plus optional Media Library uploads
 * No tracking, telemetry, ads, or remote services
 
 = Version 1 limitations =

@@ -155,7 +155,7 @@ class REST_Controller {
 	}
 
 	/**
-	 * Returns the built-in icon registry for the picker.
+	 * Returns the Dashicons registry for the picker.
 	 *
 	 * @return \WP_REST_Response
 	 */
