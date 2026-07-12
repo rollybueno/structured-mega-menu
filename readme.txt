@@ -67,7 +67,7 @@ Not in version 1. The maximum is four columns.
 
 = How do developers customize the plugin? =
 
-Public CSS variables and PHP hooks are documented in the plugin’s `docs/` folder (`css-api.md`, `hooks.md`). Source and build tooling live at https://github.com/rollybueno/structured-mega-menu. An example custom column type is available in the GitHub `/examples` directory (not included in the WordPress.org ZIP).
+Open Appearance → Mega Menus and use the **For developers** section (also available from the screen Help tab: CSS API and Developer hooks). Source and examples live at https://github.com/rollybueno/structured-mega-menu. Markdown docs in the GitHub repo are for contributors only and are not included in the WordPress.org ZIP.
 
 == Screenshots ==
 

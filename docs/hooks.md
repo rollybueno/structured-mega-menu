@@ -1,5 +1,9 @@
 # Structured Mega Menu — hooks
 
+> Contributor mirror. The WordPress.org ZIP does not include Markdown files.
+> Shipped documentation is available in wp-admin under **Appearance → Mega Menus → For developers**
+> (and the screen Help tabs), rendered from `includes/class-developer-docs.php`.
+
 All hooks use the `structured_mega_menu_` prefix.
 
 ## Actions

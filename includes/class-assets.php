@@ -107,6 +107,7 @@ class Assets {
 				'defaults'              => Schema::get_default(),
 				'deleteDataOnUninstall' => (bool) get_option( SMM_OPTION_DELETE_DATA, false ),
 				'colorPalette'          => Appearance::get_theme_palette(),
+				'developerDocs'         => Developer_Docs::get_client_payload(),
 				'strings'               => array(
 					'appTitle' => __( 'Mega Menus', 'structured-mega-menu' ),
 				),

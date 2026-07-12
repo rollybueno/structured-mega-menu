@@ -1,5 +1,9 @@
 # Structured Mega Menu — public CSS API
 
+> Contributor mirror. The WordPress.org ZIP does not include Markdown files.
+> Shipped documentation is available in wp-admin under **Appearance → Mega Menus → For developers**
+> (and the screen Help tabs), rendered from `includes/class-developer-docs.php`.
+
 These CSS custom properties are a **stable public contract** for themes and custom CSS.
 Prefer overriding variables over replacing plugin selectors.
 

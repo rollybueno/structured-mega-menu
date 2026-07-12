@@ -107,10 +107,10 @@ See [`docs/hooks.md`](docs/hooks.md) for the full hook list and [`docs/css-api.m
 
 ## For developers
 
+* **In wp-admin:** Appearance → Mega Menus → **For developers** (also Help → CSS API / Developer hooks)
 * **Source:** https://github.com/rollybueno/structured-mega-menu
-* **CSS API:** [`docs/css-api.md`](docs/css-api.md)
-* **Hooks:** [`docs/hooks.md`](docs/hooks.md)
-* **Example column:** [`examples/sample-promo-column/`](examples/sample-promo-column/)
+* **Repo-only docs (not in the WordPress.org ZIP):** [`docs/css-api.md`](docs/css-api.md), [`docs/hooks.md`](docs/hooks.md)
+* **Example column (repo only):** [`examples/sample-promo-column/`](examples/sample-promo-column/)
 
 Appearance settings (density, radius, panel colors) map to the public `--smm-panel-*` variables — prefer those over selector overrides.
 

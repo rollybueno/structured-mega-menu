@@ -105,9 +105,28 @@ class Admin {
 			)
 		);
 
+		$screen->add_help_tab(
+			array(
+				'id'      => 'smm-css-api',
+				'title'   => __( 'CSS API', 'structured-mega-menu' ),
+				'content' => Developer_Docs::get_css_api_html(),
+			)
+		);
+
+		$screen->add_help_tab(
+			array(
+				'id'      => 'smm-hooks',
+				'title'   => __( 'Developer hooks', 'structured-mega-menu' ),
+				'content' => Developer_Docs::get_hooks_html(),
+			)
+		);
+
 		$screen->set_help_sidebar(
 			'<p><strong>' . esc_html__( 'For more information:', 'structured-mega-menu' ) . '</strong></p>' .
-			'<p>' . esc_html__( 'Maximum of four columns per configuration.', 'structured-mega-menu' ) . '</p>'
+			'<p>' . esc_html__( 'Open the Help tab for CSS API and developer hooks, or scroll to For developers on this screen.', 'structured-mega-menu' ) . '</p>' .
+			'<p><a href="https://github.com/rollybueno/structured-mega-menu" target="_blank" rel="noopener noreferrer">' .
+			esc_html__( 'Source on GitHub', 'structured-mega-menu' ) .
+			'</a></p>'
 		);
 	}
 

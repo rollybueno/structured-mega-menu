@@ -30,6 +30,7 @@ import EditorHeader from './components/EditorHeader';
 import ColumnList from './components/ColumnList';
 import ColumnLayoutPicker from './components/ColumnLayoutPicker';
 import AppearanceSettings from './components/AppearanceSettings';
+import DeveloperDocs from './components/DeveloperDocs';
 import UndoNotice from './components/UndoNotice';
 import ValidationSummary from './components/ValidationSummary';
 
@@ -178,6 +179,8 @@ function MenuList() {
 					/>
 				</div>
 			</section>
+
+			<DeveloperDocs />
 		</div>
 	);
 }
@@ -351,9 +354,7 @@ function MenuEditor() {
 										'Stretches across the entire browser window, edge to edge.',
 										'structured-mega-menu'
 									),
-								}[
-									schema.settings?.panelWidth || 'navigation'
-								]
+								}[ schema.settings?.panelWidth || 'navigation' ]
 							}
 							__nextHasNoMarginBottom
 							__next40pxDefaultSize
